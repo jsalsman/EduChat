@@ -54,15 +54,15 @@ if "subject" not in st.session_state:
     st.session_state.messages = []
     st.session_state.model_name = None
 
-if not st.session_state.subject_set:
-    st.session_state.model_name = st.segmented_control("Use model:",
-        ["learnlm-1.5-pro-experimental", "gemini-2.0-flash-lite",
-         "gemini-2.0-pro-exp-02-05"], default="learnlm-1.5-pro-experimental",
-        format_func=lambda model: ("LearnLM 1.5 Pro Experimental" 
-                                   if model == "learnlm-1.5-pro-experimental" else
-            "Gemini 2.0 Flash Lite" if model == "gemini-2.0-flash-lite" else
-            "Gemini 2.0 Pro Experimental 02-05"))
-else:
+st.session_state.model_name = st.segmented_control("Use model:",
+    ["learnlm-1.5-pro-experimental", "gemini-2.0-flash-lite",
+     "gemini-2.0-pro-exp-02-05"], default="learnlm-1.5-pro-experimental",
+    format_func=lambda model: ("LearnLM 1.5 Pro Experimental" 
+                               if model == "learnlm-1.5-pro-experimental" else
+        "Gemini 2.0 Flash Lite" if model == "gemini-2.0-flash-lite" else
+        "Gemini 2.0 Pro Experimental 02-05"))
+
+if st.session_state.subject_set:
     st.markdown(f"Using model: ```{st.session_state.model_name}```")
 
 if not st.session_state.subject_set:
