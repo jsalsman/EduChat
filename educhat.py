@@ -117,11 +117,22 @@ if st.session_state.subject_set:
         # "tokens" aren't allowed in generate_content messages
         history = [{"role": m["role"], "parts": m["parts"]} for m in history]
 
-        response = st.session_state.model.generate_content(history)
+        def stream_gemini_response(response):
+            response_text = []
+            for chunk in response:
+                # Extract the text from the chunk
+                chunk_text = chunk.text
+                response_text.append(chunk_text)
+                yield chunk_text
+
+        response = st.session_state.model.generate_content(history, stream=True)
+        with st.chat_message("assistant"):
+            full_response = "".join(st.write_stream(stream_gemini_response(response)))
+
         st.session_state.messages.append({
             "role": "model", 
-            "parts": response.text,
+            "parts": full_response,
             "tokens": response.usage_metadata.candidates_token_count
         })
         with st.chat_message("assistant"):
-            st.write(response.text)
+            st.write(full_response)
