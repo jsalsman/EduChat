@@ -103,19 +103,21 @@ if st.session_state.subject_set:
         st.session_state.messages.append({"role": "user", "content": user_input})
         with st.chat_message("user"):
             st.write(user_input)
-        response = st.session_state.chat_session.send_message(user_input)
-        print (response) ### DEBUG
         try:
-            # Extract JSON between outer braces
-            json_content = response.text[response.text.find('{')
-                                        : response.text.rfind('}') + 1]
-            ## Replace escaped backticks with double backslashes
-            #json_content = json_content.replace('\\`, '\\\\`')
-            print('json content:', json_content) ### DEBUG
-            reply = loads(json_content)["reply"]
+            response = st.session_state.chat_session.send_message(user_input)
+            if not response.candidates:
+                reply = "I apologize, but I received an empty response. Please try asking your question again."
+            else:
+                try:
+                    json_content = response.text[response.text.find('{')
+                                            : response.text.rfind('}') + 1]
+                    reply = loads(json_content)["reply"]
+                except Exception as e:
+                    print(f"Error converting json: {e}")
+                    reply = response.text
         except Exception as e:
-            print(f"Error converting json: {e}") ### DEBUG
-            reply = response.text
+            print(f"Error in API call: {e}")
+            reply = "I encountered an error processing your request. Please try again."
         st.session_state.messages.append({"role": "assistant", "content": reply})
         with st.chat_message("assistant"):
             st.write(reply)
