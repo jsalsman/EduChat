@@ -49,7 +49,7 @@ if not st.session_state.subject_set:
         st.session_state.subject_set = True
         st.rerun()
 
-if st.session_state.subject_set and "chat_session" not in st.session_state:
+if st.session_state.subject_set and "model" not in st.session_state:
     generation_config = {
         "temperature": 0,  # for reproducability
         #"max_output_tokens": 2000,
@@ -107,6 +107,7 @@ if st.session_state.subject_set:
             history = [msg for msg in st.session_state.messages]
             history.append({"role": "user", "parts": user_input})
             response = st.session_state.model.generate_content(history)
+            print(response) ### DEBUG
             try:
                 text = response.text
                 json_content = text[text.find('{'):text.rfind('}')+1]
