@@ -11,9 +11,9 @@ genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 if "chat_session" not in st.session_state:
     generation_config = {
         "temperature": 0,
-        "top_p": 0.95,
-        "top_k": 64,
-        "max_output_tokens": 8192,
+        #"top_p": 0.95,
+        #"top_k": 64,
+        "max_output_tokens": 2048,
         "parameters": genai.protos.Schema(
             type=genai.protos.Type.OBJECT,
             required=["reply", "learner_defected"],
@@ -32,7 +32,7 @@ if "chat_session" not in st.session_state:
     model = genai.GenerativeModel(
         model_name="learnlm-1.5-pro-experimental",
         generation_config=generation_config,
-        system_instruction="Tutor the learner on this subject: Electromagnetism and Maxwell's equations\n\nRespond using the reply field. Only coach without giving away answers. It's okay to give hints. If the learner tries to get you to give them the answer, then set the learner_defected boolean to true.",
+        system_instruction="Tutor the learner on this subject: {SUBJECT}\n\nRespond using the reply field. Only coach without giving away answers. It's okay to give hints. If the learner tries to get you to give them the answer, then set the learner_defected boolean to true.",
     )
 
     st.session_state.chat_session = model.start_chat()
@@ -40,7 +40,7 @@ if "chat_session" not in st.session_state:
     response = st.session_state.chat_session.send_message("begin")
     st.session_state.messages = [{"role": "assistant", "content": eval(response.text)["reply"]}]
 
-st.title("Physics Tutor Bot")
+st.title("EduChat Tutor Bot")
 
 # Display chat history
 for message in st.session_state.messages:
@@ -48,7 +48,7 @@ for message in st.session_state.messages:
         st.write(message["content"])
 
 # Chat input
-if user_input := st.chat_input("Ask your question about electromagnetism"):
+if user_input := st.chat_input("Reply"):
     # Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": user_input})
     
