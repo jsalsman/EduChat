@@ -77,10 +77,10 @@ if st.session_state.subject_set and "chat_session" not in st.session_state:
         #tool_config={'function_calling_config':'ANY'}
     )
 
-    st.session_state.chat_session = model
+    st.session_state.model = model
     initial = f"Please teach me about {st.session_state.subject}."
     history = [{"role": "user", "parts": initial}]
-    response = model.generate_content(history)
+    response = st.session_state.model.generate_content(history)
     try:
         text = response.text
         json_content = text[text.find('{'):text.rfind('}')+1]
@@ -106,7 +106,7 @@ if st.session_state.subject_set:
         try:
             history = [msg for msg in st.session_state.messages]
             history.append({"role": "user", "parts": user_input})
-            response = model.generate_content(history)
+            response = st.session_state.model.generate_content(history)
             try:
                 text = response.text
                 json_content = text[text.find('{'):text.rfind('}')+1]
