@@ -1,5 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 
+# System prompt
 INSTRUCTIONS = """
 Only coach without giving away answers. It's okay to give
 hints. When the user asks you a question, if you think it
@@ -16,12 +17,14 @@ the user asks, and without making them put it in a code
 block. Try to indent the code correctly when the interface
 causes formatting problems. And fix the user's Python
 errors whenever you encounter any, unless Python is the
-specific subject of instruction.
+specific subject of instruction. You may use LaTeX
+expressions, by wrapping them in "$" or "$$" (the "$$"
+expressions must be on their own lines.)
      When the user solves a difficult problem or answers
 a complicated question, include the star emoji ⭐ in your
 response."""
 
-import google.generativeai as genai
+import google.generativeai as genai  # pip install google-generativeai
 from os import environ
 import streamlit as st
 
@@ -47,6 +50,20 @@ avoid giving them away instead of coaching with hints.""")
 if "subject" not in st.session_state:
     st.session_state.subject = ""
     st.session_state.subject_set = False
+    st.session_state.new = True
+    st.session_state.messages = []
+    st.session_state.model_name = None
+
+if not st.session_state.subject_set:
+    st.session_state.model_name = st.segmented_control("Use model:",
+        ["learnlm-1.5-pro-experimental", "gemini-2.0-flash-lite",
+         "gemini-2.0-pro-exp-02-05"], default="learnlm-1.5-pro-experimental",
+        format_func=lambda model: ("LearnLM 1.5 Pro Experimental" 
+                                   if model == "learnlm-1.5-pro-experimental" else
+            "Gemini 2.0 Flash Lite" if model == "gemini-2.0-flash-lite" else
+            "Gemini 2.0 Pro Experimental 02-05"))
+else:
+    st.markdown(f"Using model: ```{st.session_state.model_name}```")
 
 if not st.session_state.subject_set:
     #st.session_state.max_tokens = st.slider(
@@ -73,24 +90,15 @@ if st.session_state.subject_set and "model" not in st.session_state:
     }
 
     model = genai.GenerativeModel(
-        model_name="gemini-2.0-pro-exp-02-05", #"learnlm-1.5-pro-experimental",
+        model_name=st.session_state.model_name,
         generation_config=generation_config,
         system_instruction=system_prompt,
         tools=['code_execution'],  # https://ai.google.dev/gemini-api/docs/code-execution
     )
 
     st.session_state.model = model
-    initial = f"Please teach me about {st.session_state.subject}."
-    history = [{"role": "user", "parts": initial}]
-    response = st.session_state.model.generate_content(history, stream=True)
-    with st.chat_message("assistant"):
-        st.write_stream(response)
-    st.session_state.messages = [
-        {"role": "user", "parts": initial,
-         "tokens": response.usage_metadata.prompt_token_count},
-        {"role": "model", "parts": response.text,
-         "tokens": response.usage_metadata.candidates_token_count}
-    ]
+
+    st.session_state.initial = f"Please teach me about {st.session_state.subject}."
 
 if st.session_state.subject_set:
     for message in st.session_state.messages:
@@ -98,7 +106,11 @@ if st.session_state.subject_set:
         with st.chat_message(role):
             st.write(message["parts"])
 
-    if user_input := st.chat_input("Reply"):
+    if (user_input := st.chat_input("Reply")) or st.session_state.new:
+        if st.session_state.new:
+            user_input = st.session_state.initial
+            st.session_state.new = False
+
         st.session_state.messages.append({"role": "user", "parts": user_input})
         with st.chat_message("user"):
             st.write(user_input)
@@ -117,22 +129,12 @@ if st.session_state.subject_set:
         # "tokens" aren't allowed in generate_content messages
         history = [{"role": m["role"], "parts": m["parts"]} for m in history]
 
-        def stream_gemini_response(response):
-            response_text = []
-            for chunk in response:
-                # Extract the text from the chunk
-                chunk_text = chunk.text
-                response_text.append(chunk_text)
-                yield chunk_text
-
         response = st.session_state.model.generate_content(history, stream=True)
         with st.chat_message("assistant"):
-            full_response = "".join(st.write_stream(stream_gemini_response(response)))
+            st.write_stream((chunk.text for chunk in response))
 
         st.session_state.messages.append({
             "role": "model", 
-            "parts": full_response,
+            "parts": response.text,
             "tokens": response.usage_metadata.candidates_token_count
         })
-        with st.chat_message("assistant"):
-            st.write(full_response)
