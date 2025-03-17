@@ -77,17 +77,14 @@ if st.session_state.subject_set and "chat_session" not in st.session_state:
         #tool_config={'function_calling_config':'ANY'}
     )
 
-    st.session_state.chat_session = model.start_chat()
+    st.session_state.chat_session = model
     initial = f"Please teach me about {st.session_state.subject}."
-    response = st.session_state.chat_session.send_message(initial)
-    print(response) ### DEBUG
+    history = [{"role": "user", "parts": initial}]
+    response = model.generate_content(history)
     try:
-        # Extract JSON between outer braces
-        json_content = response.text[response.text.find('{')
-                                    : response.text.rfind('}') + 1]
-        # Replace escaped backticks with double backslashes
+        text = response.text
+        json_content = text[text.find('{'):text.rfind('}')+1]
         json_content = json_content.replace(S1, S2)
-        print('json content:', json_content) ### DEBUG
         reply = loads(json_content)["reply"]
     except Exception as e:
         print(f"Error converting json: {e}") ### DEBUG
@@ -107,21 +104,17 @@ if st.session_state.subject_set:
         with st.chat_message("user"):
             st.write(user_input)
         try:
-            response = st.session_state.chat_session.send_message(user_input)
-            print(response) ### DEBUG
-            if not response.candidates:
-                reply = "I apologize, but I received an empty response. Please try asking your question again."
-            else:
-                try:
-                    json_content = response.text[response.text.find('{')
-                                            : response.text.rfind('}') + 1]
-                    # Replace escaped backticks with double backslashes
-                    json_content = json_content.replace(S1, S2)
-                    print('json content:', json_content) ### DEBUG
-                    reply = loads(json_content)["reply"]
-                except Exception as e:
-                    print(f"Error converting json: {e}")
-                    reply = response.text
+            history = [msg for msg in st.session_state.messages]
+            history.append({"role": "user", "parts": user_input})
+            response = model.generate_content(history)
+            try:
+                text = response.text
+                json_content = text[text.find('{'):text.rfind('}')+1]
+                json_content = json_content.replace(S1, S2)
+                reply = loads(json_content)["reply"]
+            except Exception as e:
+                print(f"Error parsing response: {e}")
+                reply = response.text
         except Exception as e:
             print(f"Error in API call: {e}")
             reply = "I encountered an error processing your request. Please try again."
