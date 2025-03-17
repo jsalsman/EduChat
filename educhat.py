@@ -107,7 +107,7 @@ if st.session_state.subject_set:
             current_token_count -= len(oldest_message['parts']) // 4
 
         response = st.session_state.model.generate_content(history)
-        #print(response) ### keep for debugging
+        print(response.usage_metadata) ### keep for debugging
         st.session_state.messages.append({"role": "model", "parts": response.text})
         with st.chat_message("assistant"):
             st.write(response.text)
