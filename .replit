@@ -16,3 +16,15 @@ deploymentTarget = "gce"
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[workflows]
+runButton = "Streamlit App"
+
+[[workflows.workflow]]
+name = "Streamlit App"
+author = 2410224
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "streamlit run main.py"

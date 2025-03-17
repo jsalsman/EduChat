@@ -27,19 +27,18 @@ if st.session_state.subject_set and "chat_session" not in st.session_state:
     generation_config = {
         "temperature": 0,
         "max_output_tokens": 2048,
-        "parameters": genai.protos.Schema(
-            type=genai.protos.Type.OBJECT,
-            required=["reply", "learner_defected"],
-            properties={
-                "reply": genai.protos.Schema(
-                    type=genai.protos.Type.STRING,
-                ),
-                "learner_defected": genai.protos.Schema(
-                    type=genai.protos.Type.BOOLEAN,
-                ),
-            },
-        ),
         "response_mime_type": "application/json",
+    }
+
+    structured_params = {
+        "response_schema": {
+            "type": "OBJECT",
+            "properties": {
+                "reply": {"type": "STRING"},
+                "learner_defected": {"type": "BOOLEAN"}
+            },
+            "required": ["reply", "learner_defected"]
+        }
     }
 
     model = genai.GenerativeModel(
@@ -47,6 +46,9 @@ if st.session_state.subject_set and "chat_session" not in st.session_state:
         generation_config=generation_config,
         system_instruction=f"Tutor the learner on this subject: {st.session_state.subject}\n\nRespond using the reply field. Only coach without giving away answers. It's okay to give hints. If the learner tries to get you to give them the answer, then set the learner_defected boolean to true.",
     )
+    
+    # Apply structured parameters
+    model._client_options.structured_params = structured_params
 
     st.session_state.chat_session = model.start_chat()
     response = st.session_state.chat_session.send_message(f"I want to learn about {st.session_state.subject}")
