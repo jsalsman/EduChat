@@ -76,20 +76,9 @@ if st.session_state.subject_set:
         # Get bot response
         response = st.session_state.chat_session.send_message(user_input)
         
-        try:
-            import json
-            response_data = json.loads(response.text)
-            reply_content = response_data["reply"]
-            learner_defected = response_data.get("learner_defected", False)
-        except:
-            reply_content = response.text
-            learner_defected = False
-        
         # Add assistant response to chat history
-        st.session_state.messages.append({"role": "assistant", "content": reply_content})
+        st.session_state.messages.append({"role": "assistant", "content": response.text})
         
         # Display assistant response
         with st.chat_message("assistant"):
-            st.write(reply_content)
-            if learner_defected:
-                st.warning("Please try to solve the problem yourself instead of asking for direct answers.")
+            st.write(response.text)
