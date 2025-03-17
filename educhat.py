@@ -107,6 +107,8 @@ if st.session_state.subject_set:
             # Extract JSON between outer braces
             json_content = response.text[response.text.find('{')
                                         : response.text.rfind('}') + 1]
+            # Replace escaped backticks with single backticks before parsing
+            json_content = json_content.replace('\\`', '`')
             reply = loads(json_content)["reply"]
         except Exception as e:
             print(f"Error converting json: {e}") ### DEBUG
