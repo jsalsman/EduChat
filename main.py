@@ -50,25 +50,12 @@ if st.session_state.subject_set and "chat_session" not in st.session_state:
     ])
     
     response = st.session_state.chat_session.send_message(f"I want to learn about {st.session_state.subject}")
-    response_text = response.text.strip()
-    
-    # Remove any potential prefix (like "EduChat Tutor Bot")
-    if "\n" in response_text:
-        response_text = response_text.split("\n")[-1].strip()
-    
-    # Try to extract just the JSON part
     try:
         import json
-        json_start = response_text.find('{')
-        json_end = response_text.rfind('}') + 1
-        if json_start >= 0 and json_end > json_start:
-            json_str = response_text[json_start:json_end]
-            response_data = json.loads(json_str)
-            st.session_state.messages = [{"role": "assistant", "content": response_data["reply"]}]
-        else:
-            st.session_state.messages = [{"role": "assistant", "content": response_text}]
+        response_data = json.loads(response.text)
+        st.session_state.messages = [{"role": "assistant", "content": response_data["reply"]}]
     except:
-        st.session_state.messages = [{"role": "assistant", "content": response_text}]
+        st.session_state.messages = [{"role": "assistant", "content": response.text}]
 
 # Display chat interface once subject is set
 if st.session_state.subject_set:
@@ -89,26 +76,13 @@ if st.session_state.subject_set:
         # Get bot response
         response = st.session_state.chat_session.send_message(user_input)
         
-        response_text = response.text.strip()
-        
-        # Remove any potential prefix
-        if "\n" in response_text:
-            response_text = response_text.split("\n")[-1].strip()
-        
         try:
             import json
-            json_start = response_text.find('{')
-            json_end = response_text.rfind('}') + 1
-            if json_start >= 0 and json_end > json_start:
-                json_str = response_text[json_start:json_end]
-                response_data = json.loads(json_str)
-                reply_content = response_data["reply"]
-                learner_defected = response_data.get("learner_defected", False)
-            else:
-                reply_content = response_text
-                learner_defected = False
+            response_data = json.loads(response.text)
+            reply_content = response_data["reply"]
+            learner_defected = response_data.get("learner_defected", False)
         except:
-            reply_content = response_text
+            reply_content = response.text
             learner_defected = False
         
         # Add assistant response to chat history
