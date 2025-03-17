@@ -1,4 +1,4 @@
-# Constrained LearnLM Tutor, by Jim Salsman, Narch 2025
+# Constrained LearnLM Tutor, Streamlit app by Jim Salsman, Narch 2025
 
 INSTRUCTIONS = """
 Only coach without giving away answers. It's okay to give hints. When the user
@@ -82,6 +82,8 @@ if st.session_state.subject_set and "chat_session" not in st.session_state:
         # Extract JSON between outer braces
         json_content = response.text[response.text.find('{')
                                     : response.text.rfind('}') + 1]
+        # Replace escaped backticks with single backticks before parsing
+        json_content = json_content.replace('\\`', '`')
         print(json_content) ### DEBUG
         reply = loads(json_content)["reply"]
     except Exception as e:
