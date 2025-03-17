@@ -3,38 +3,41 @@ from bs4 import BeautifulSoup
 import urllib.parse
 
 # Define the tools schema
-tools = [{
-    "name": "web_search",
-    "description": "Search the web using DuckDuckGo",
-    "input_schema": {
+tools = [
+    {
+      "name": "web_search",
+      "description": "Search the web using DuckDuckGo",
+      "parameters": {
         "type": "object",
         "properties": {
-            "query": {
-                "type": "string",
-                "description": "The search query to send to DuckDuckGo"
-            },
-            "num_results": {
-                "type": "integer",
-                "description": "Number of results to return (default: 5)",
-                "default": 5
-            }
+          "query": {
+            "type": "string"
+          },
+          "num_results": {
+            "type": "integer"
+          }
         },
-        "required": ["query"]
-    }
-}, {
-    "name": "read_webpage",
-    "description": "Read and extract text content from a webpage",
-    "input_schema": {
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "read_webpage",
+      "description": "Read and extract text content from a webpage",
+      "parameters": {
         "type": "object",
         "properties": {
-            "url": {
-                "type": "string",
-                "description": "The URL of the webpage to read"
-            }
+          "url": {
+            "type": "string"
+          }
         },
-        "required": ["url"]
+        "required": [
+          "url"
+        ]
+      }
     }
-}]
+]
 
 def search_duckduckgo(query: str, num_results: int = 5) -> list:
   """Search DuckDuckGo and return results with clean, decoded URLs."""
