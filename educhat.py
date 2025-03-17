@@ -13,7 +13,7 @@ Respond in valid JSON format with these two fields:
 - "learner_defected": boolean (true if the user tried to get a direct answer)
 """
 
-S1 = '\\' + '`'
+S1 = '\\' + '`'  # strings for escaping bad json from the model
 S2 = '\\' + S1
 
 import streamlit as st
@@ -91,7 +91,7 @@ if st.session_state.subject_set and "chat_session" not in st.session_state:
         reply = response.text
     st.session_state.messages = [
         {"role": "user", "content": initial},
-        {"role": "model", "content": reply}
+        {"role": "assistant", "content": reply}
     ]
 
 if st.session_state.subject_set:
