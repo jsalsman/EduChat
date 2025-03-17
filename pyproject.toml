@@ -7,8 +7,7 @@ authors = ["Your Name <you@example.com>"]
 [tool.poetry.dependencies]
 python = ">=3.10.0,<3.11"
 streamlit = "^1.27.2"
-google-ai-generativelanguage = "^0.6.16"
-google-genai = "^1.5.0"
+google-generativeai = "^0.8.4"
 
 [tool.pyright]
 # https://github.com/microsoft/pyright/blob/main/docs/configuration.md
