@@ -13,6 +13,9 @@ Respond in valid JSON format with these two fields:
 - "learner_defected": boolean (true if the user tried to get a direct answer)
 """
 
+S1 = '\\' + '`'
+S2 = '\\' + S1
+
 import streamlit as st
 from os import environ
 import google.generativeai as genai
@@ -82,8 +85,8 @@ if st.session_state.subject_set and "chat_session" not in st.session_state:
         # Extract JSON between outer braces
         json_content = response.text[response.text.find('{')
                                     : response.text.rfind('}') + 1]
-        ## Replace escaped backticks with double backslashes
-        #json_content = json_content.replace('\\`', '\\\\`')
+        # Replace escaped backticks with double backslashes
+        json_content = json_content.replace(S1, S2)
         print('json content:', json_content) ### DEBUG
         reply = loads(json_content)["reply"]
     except Exception as e:
@@ -105,12 +108,16 @@ if st.session_state.subject_set:
             st.write(user_input)
         try:
             response = st.session_state.chat_session.send_message(user_input)
+            print(response) ### DEBUG
             if not response.candidates:
                 reply = "I apologize, but I received an empty response. Please try asking your question again."
             else:
                 try:
                     json_content = response.text[response.text.find('{')
                                             : response.text.rfind('}') + 1]
+                    # Replace escaped backticks with double backslashes
+                    json_content = json_content.replace(S1, S2)
+                    print('json content:', json_content) ### DEBUG
                     reply = loads(json_content)["reply"]
                 except Exception as e:
                     print(f"Error converting json: {e}")
