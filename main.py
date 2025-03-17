@@ -52,7 +52,10 @@ if st.session_state.subject_set and "chat_session" not in st.session_state:
     response = st.session_state.chat_session.send_message(f"I want to learn about {st.session_state.subject}")
     try:
         response_json = eval(response.text)
-        st.session_state.messages = [{"role": "assistant", "content": response_json["reply"]}]
+        if isinstance(response_json, dict) and "reply" in response_json:
+            st.session_state.messages = [{"role": "assistant", "content": response_json["reply"]}]
+        else:
+            st.session_state.messages = [{"role": "assistant", "content": response.text}]
     except:
         # Fallback if not valid JSON
         st.session_state.messages = [{"role": "assistant", "content": response.text}]
@@ -78,8 +81,12 @@ if st.session_state.subject_set:
         
         try:
             response_data = eval(response.text)
-            reply_content = response_data["reply"]
-            learner_defected = response_data.get("learner_defected", False)
+            if isinstance(response_data, dict) and "reply" in response_data:
+                reply_content = response_data["reply"]
+                learner_defected = response_data.get("learner_defected", False)
+            else:
+                reply_content = response.text
+                learner_defected = False
         except:
             # Fallback if not valid JSON
             reply_content = response.text
