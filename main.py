@@ -27,32 +27,35 @@ if st.session_state.subject_set and "chat_session" not in st.session_state:
     generation_config = {
         "temperature": 0,
         "max_output_tokens": 2048,
-        "response_mime_type": "application/json",
-    }
-
-    structured_params = {
-        "response_schema": {
-            "type": "OBJECT",
-            "properties": {
-                "reply": {"type": "STRING"},
-                "learner_defected": {"type": "BOOLEAN"}
-            },
-            "required": ["reply", "learner_defected"]
-        }
     }
 
     model = genai.GenerativeModel(
-        model_name="learnlm-1.5-pro-experimental",
+        model_name="gemini-1.5-pro",
         generation_config=generation_config,
-        system_instruction=f"Tutor the learner on this subject: {st.session_state.subject}\n\nRespond using the reply field. Only coach without giving away answers. It's okay to give hints. If the learner tries to get you to give them the answer, then set the learner_defected boolean to true.",
     )
     
-    # Apply structured parameters
-    model._client_options.structured_params = structured_params
+    system_prompt = f"""Tutor the learner on this subject: {st.session_state.subject}
+    
+    Only coach without giving away answers. It's okay to give hints. 
+    If the learner tries to get you to give them the answer, set learner_defected to true.
+    
+    Respond in valid JSON format with these fields:
+    - "reply": your response to the learner
+    - "learner_defected": boolean (true if learner is trying to get direct answers)
+    """
 
-    st.session_state.chat_session = model.start_chat()
+    st.session_state.chat_session = model.start_chat(history=[
+        {"role": "user", "parts": [f"I want to learn about {st.session_state.subject}"]},
+        {"role": "model", "parts": [system_prompt]}
+    ])
+    
     response = st.session_state.chat_session.send_message(f"I want to learn about {st.session_state.subject}")
-    st.session_state.messages = [{"role": "assistant", "content": eval(response.text)["reply"]}]
+    try:
+        response_json = eval(response.text)
+        st.session_state.messages = [{"role": "assistant", "content": response_json["reply"]}]
+    except:
+        # Fallback if not valid JSON
+        st.session_state.messages = [{"role": "assistant", "content": response.text}]
 
 # Display chat interface once subject is set
 if st.session_state.subject_set:
@@ -72,13 +75,21 @@ if st.session_state.subject_set:
         
         # Get bot response
         response = st.session_state.chat_session.send_message(user_input)
-        response_data = eval(response.text)
+        
+        try:
+            response_data = eval(response.text)
+            reply_content = response_data["reply"]
+            learner_defected = response_data.get("learner_defected", False)
+        except:
+            # Fallback if not valid JSON
+            reply_content = response.text
+            learner_defected = False
         
         # Add assistant response to chat history
-        st.session_state.messages.append({"role": "assistant", "content": response_data["reply"]})
+        st.session_state.messages.append({"role": "assistant", "content": reply_content})
         
         # Display assistant response
         with st.chat_message("assistant"):
-            st.write(response_data["reply"])
-            if response_data["learner_defected"]:
+            st.write(reply_content)
+            if learner_defected:
                 st.warning("Please try to solve the problem yourself instead of asking for direct answers.")
