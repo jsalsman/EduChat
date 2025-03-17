@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 import google.generativeai as genai
+from google.ai.generativelanguage_v1beta.types import content
 import json
 from google.ai.generativelanguage_v1beta.types import content
 
@@ -23,7 +24,22 @@ if not st.session_state.subject_set:
 if st.session_state.subject_set and "chat_session" not in st.session_state:
     generation_config = {
         "temperature": 0,
-        "max_output_tokens": 2048,
+        "top_p": 0.95,
+        "top_k": 64,
+        "max_output_tokens": 8192,
+        "parameters": genai.protos.Schema(
+            type=genai.protos.Type.OBJECT,
+            required=["reply", "learner_defected"],
+            properties={
+                "reply": genai.protos.Schema(
+                    type=genai.protos.Type.STRING,
+                ),
+                "learner_defected": genai.protos.Schema(
+                    type=genai.protos.Type.BOOLEAN,
+                ),
+            },
+        ),
+        "response_mime_type": "application/json",
     }
 
     model = genai.GenerativeModel(
