@@ -90,8 +90,8 @@ if st.session_state.subject_set and "model" not in st.session_state:
         print(f"Error converting json: {e}") ### DEBUG
         reply = response.text
     st.session_state.messages = [
-        {"role": "user", "content": initial},
-        {"role": "assistant", "content": reply}
+        {"role": "user", "parts": initial},
+        {"role": "model", "parts": reply}
     ]
 
 if st.session_state.subject_set:
@@ -100,12 +100,11 @@ if st.session_state.subject_set:
             st.write(message["content"])
 
     if user_input := st.chat_input("Reply"):
-        st.session_state.messages.append({"role": "user", "content": user_input})
+        st.session_state.messages.append({"role": "user", "parts": user_input})
         with st.chat_message("user"):
             st.write(user_input)
         try:
-            history = [msg for msg in st.session_state.messages]
-            history.append({"role": "user", "parts": user_input})
+            history = st.session_state.messages
             response = st.session_state.model.generate_content(history)
             print(response) ### DEBUG
             try:
@@ -119,6 +118,6 @@ if st.session_state.subject_set:
         except Exception as e:
             print(f"Error in API call: {e}")
             reply = "I encountered an error processing your request. Please try again."
-        st.session_state.messages.append({"role": "assistant", "content": reply})
+        st.session_state.messages.append({"role": "model", "parts": reply})
         with st.chat_message("assistant"):
             st.write(reply)
