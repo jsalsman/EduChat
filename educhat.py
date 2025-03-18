@@ -50,7 +50,7 @@ obtain direct answers, guiding the model to avoid giving them away instead
 of coaching with hints.
 
 The [source code](https://replit.com/@jsalsman/EduChat#educhat.py) includes
-the system instruction prompt and can easily be "re-mixed" in Replit to
+the system instruction prompt and can easily be "remixed" in Replit to
 experiment with changes. See the [Replit](https://docs.replit.com/) and
 [Streamlit](https://docs.streamlit.io/) documentation. See also [Tonga
 *et al.* (2024)](https://arxiv.org/abs/2411.03495) for the inspiration.""")
