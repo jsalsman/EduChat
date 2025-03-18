@@ -26,7 +26,6 @@ response."""
 
 import google.generativeai as genai  # pip install google-generativeai
 from google.generativeai.types import File as GenAIFile
-from json import loads
 from os import environ
 import streamlit as st
 from time import sleep  # for rate limiting retries
@@ -66,7 +65,7 @@ if not st.session_state.model_set:
         ["learnlm-1.5-pro-experimental", "gemini-2.0-flash-lite",
          "gemini-2.0-pro-exp-02-05"], default="learnlm-1.5-pro-experimental",
         format_func=lambda model: ("LearnLM 1.5 Pro Experimental" 
-                                   if model == "learnlm-1.5-pro-experimental" else
+                             if model == "learnlm-1.5-pro-experimental" else
             "Gemini 2.0 Flash Lite" if model == "gemini-2.0-flash-lite" else
             "Gemini 2.0 Pro Experimental 02-05"))
 else:
@@ -115,7 +114,8 @@ if st.session_state.model_set:
         with st.chat_message(role):
             if isinstance(message["parts"], GenAIFile):
                 file = message["parts"]
-                st.write(f"Uploaded file '{file.display_name}' type {file.mime_type} with {file.size_bytes} bytes")
+                st.write(f"Uploaded file '{file.display_name}' type "
+                         f"{file.mime_type} with {file.size_bytes} bytes")
             else:
                 st.write(message["parts"])
 
@@ -129,11 +129,14 @@ if st.session_state.model_set:
             files_input = json_input.files
             if files_input:  # upload files and add them to the messages
                 for f in files_input:
-                    file = genai.upload_file(f, display_name=f.name, mime_type=f.type, resumable=False)
-                    # Count tokens using the API
-                    token_count = st.session_state.model.count_tokens(file).total_tokens
-                    st.write(f"Uploaded file '{file.display_name}' type {file.mime_type} with {token_count} tokens")
-                    st.session_state.messages.append({"role": "user", "parts": file, "tokens": token_count})
+                    file = genai.upload_file(f, display_name=f.name,
+                                             mime_type=f.type, resumable=False)
+                    token_count = st.session_state.model.count_tokens(
+                                                            file).total_tokens
+                    st.write(f"Uploaded file '{file.display_name}' "
+                             f"type {file.mime_type} with {token_count} tokens")
+                    st.session_state.messages.append({"role": "user",
+                                        "parts": file, "tokens": token_count})
 
         # Add message with token count for text input
         st.session_state.messages.append({
@@ -156,10 +159,7 @@ if st.session_state.model_set:
         # Format messages for the model
         formatted_history = []
         for m in history:
-            if isinstance(m["parts"], str):
-                formatted_history.append({"role": m["role"], "parts": [m["parts"]]})
-            else:
-                formatted_history.append({"role": m["role"], "parts": [m["parts"]]})
+            formatted_history.append({"role": m["role"], "parts": [m["parts"]]})
 
         print("history length:", len(formatted_history)) ### for debugging
 
