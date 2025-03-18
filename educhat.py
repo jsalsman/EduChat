@@ -23,7 +23,7 @@ import google.generativeai as genai  # pip install google-generativeai
 from google.generativeai.types import File as GenAIFile
 from os import environ  # API key access from Replit's Secrets tool on far left
 import streamlit as st  # Streamlet app framework
-from sys import stderr  # for logging errors from bad streaming chunks
+from sys import stderr  # for logging errors
 from time import sleep  # for rate limiting API retries
 
 # Initialize Google genai API for with an API key
@@ -36,7 +36,7 @@ st.html("""<style>
   .block-container { padding-top: 2.2rem !important; }
 </style>""")
 
-st.header("Constrained LearnLM Tutor")
+st.header("EduChat: A Constrained LearnLM Tutor")
 st.markdown("""This chatbot uses Google's free [LearnLM 1.5 Pro
 Experimental](https://ai.google.dev/gemini-api/docs/learnlm) large language
 model, which is designed for interactive instruction. It has a lot of great
@@ -167,6 +167,7 @@ if st.session_state.model_set:  # Main interaction loop
                         history, stream=True)
                 break
             except Exception as e:
+                print("Model API error; retrying: {e}", file=stderr)
                 st.error(f"Error occurred: {e}. Retrying in {delay} seconds...")
                 sleep(delay)
 
