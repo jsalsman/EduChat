@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 # MIT License -- see the LICENSE file
-# v1.0.3. Also at: https://github.com/jsalsman/EduChat
+# v1.0.4. Also at: https://github.com/jsalsman/EduChat
 
 # System prompt:
 INSTRUCTIONS = """
@@ -64,7 +64,7 @@ if "subject" not in st.session_state:  # Initialize state
     st.session_state.model_name = None
     st.session_state.model_set = False
 
-if not st.session_state.model_set:  # Initialize model
+if not st.session_state.model_set:  # Select model
     st.session_state.model_name = st.segmented_control(
         "Select any of these free models:", ["learnlm-1.5-pro-experimental",
           "gemini-2.0-flash-lite", "gemini-2.0-pro-exp-02-05"],
