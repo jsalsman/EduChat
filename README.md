@@ -3,6 +3,10 @@
 
 EduChat is a Streamlit-based educational chatbot that leverages Google's LearnLM 1.5 Pro Experimental large language model for interactive tutoring. The chatbot is designed to provide guided learning experiences while avoiding direct answers to homework questions.
 
+## Source code
+
+The source code is entirely in the [educhat.py](educhat.py) file. None of the other files are necessary to run it outside of Replit.
+
 ## Features
 
 - Interactive tutoring on any subject
