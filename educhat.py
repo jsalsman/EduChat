@@ -25,6 +25,7 @@ a complicated question, include the star emoji ⭐ in your
 response."""
 
 import google.generativeai as genai  # pip install google-generativeai
+from google.generativeai.types import File as GenAIFile
 from json import loads
 from os import environ
 import streamlit as st
@@ -112,7 +113,7 @@ if st.session_state.model_set:
     for message in st.session_state.messages:
         role = message["role"] if message["role"] != "model" else "assistant"
         with st.chat_message(role):
-            if isinstance(message["parts"], genai.File):
+            if isinstance(message["parts"], GenAIFile):
                 file = message["parts"]
                 st.write(f"Uploaded file '{file.display_name}' type {file.mime_type} with {file.size_bytes} bytes")
             else:
