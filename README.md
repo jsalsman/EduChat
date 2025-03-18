@@ -9,7 +9,7 @@ EduChat is a Streamlit-based educational chatbot that leverages Google's LearnLM
 - Built-in Python code execution capabilities
 - Support for LaTeX mathematical expressions
 - File upload functionality
-- Smart hints instead of direct answers
+- Instructional hints instead of direct answers
 - Multiple model options:
   - LearnLM 1.5 Pro Experimental
   - Gemini 2.0 Flash Lite
@@ -17,7 +17,7 @@ EduChat is a Streamlit-based educational chatbot that leverages Google's LearnLM
 
 ## Getting Started
 
-1. Fork this template to create your own instance
+1. Fork this repo to create your own instance
 2. Add your Google API key in the Secrets tool (Environment Variables) with the key name `FREE_GEMINI_API_KEY`
 3. Click the "Run" button to start the Streamlit app
 
@@ -27,7 +27,6 @@ The project uses Poetry for dependency management. Key dependencies include:
 - Python 3.10
 - Streamlit
 - Google GenerativeAI
-- BeautifulSoup4
 
 ## Usage
 
@@ -49,9 +48,9 @@ MIT License - See the LICENSE file for details
 
 ## Credits
 
-- Original implementation by Jim Salsman, March 2025
+- Implementation by Jim Salsman, March 2025
 - Inspired by [Tonga et al. (2024)](https://arxiv.org/abs/2411.03495)
 
 ## Contributing
 
-Feel free to fork this template and customize it for your own educational purposes!
+Feel free to fork this repo and customize it for your own educational purposes!
