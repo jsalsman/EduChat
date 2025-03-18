@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 # MIT License -- see the LICENSE file
-# v1.0.1. Also at: https://github.com/jsalsman/EduChat
+# v1.0.2. Also at: https://github.com/jsalsman/EduChat
 
 # System prompt:
 INSTRUCTIONS = """
@@ -169,7 +169,7 @@ if st.session_state.model_set:  # Main interaction loop
                         history, stream=True)
                 break
             except Exception as e:
-                print("Model API error; retrying: {e}", file=stderr)
+                print(f"Model API error; retrying: {e}", file=stderr)
                 st.error(f"Error occurred: {e}. Retrying in {delay} seconds...")
                 sleep(delay)
 
@@ -178,7 +178,7 @@ if st.session_state.model_set:  # Main interaction loop
                 try:
                     st.write_stream((chunk.text for chunk in response))
                 except ValueError as e:
-                    print("A response chunk caused an error: {e}",
+                    print(f"A response chunk caused an error: {e}",
                           file=stderr)
             st.session_state.messages.append({
                 "role": "model", 
