@@ -148,16 +148,20 @@ if st.session_state.model_set:
             oldest_message = history.pop(0)
             current_token_count -= oldest_message.get('tokens', 0)
 
-        # "tokens" aren't allowed in generate_content messages
-        history = [{"role": m["role"], "parts": m["parts"]}
-                   for m in history]
+        # Format messages for the model
+        formatted_history = []
+        for m in history:
+            if isinstance(m["parts"], str):
+                formatted_history.append({"role": m["role"], "parts": [m["parts"]]})
+            else:
+                formatted_history.append({"role": m["role"], "parts": [m["parts"]]})
 
-        print("history length:", len(history)) ### for debugging
+        print("history length:", len(formatted_history)) ### for debugging
 
         response = None  # Initialize response
         for delay in [5, 10, 20, 30]:
             try:
-                response = st.session_state.model.generate_content(history, stream=True)
+                response = st.session_state.model.generate_content(formatted_history, stream=True)
                 break
             except Exception as e:
                 st.error(f"Error occurred: {e}. Retrying in {delay} seconds...")
