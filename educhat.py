@@ -1,4 +1,5 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
+# MIT License -- see the LICENSE file
 
 # System prompt:
 INSTRUCTIONS = """
@@ -22,11 +23,11 @@ complicated question, include the star emoji ⭐ in your response."""
 import google.generativeai as genai  # pip install google-generativeai
 from google.generativeai.types import File as GenAIFile
 from os import environ  # API key access from Replit's Secrets tool on far left
-import streamlit as st  # Streamlet app framework
+import streamlit as st  # Streamlit app framework
 from sys import stderr  # for logging errors
 from time import sleep  # for rate limiting API retries
 
-# Initialize Google genai API for with an API key
+# Initialize Google genai API with an API key
 genai.configure(api_key=environ["FREE_GEMINI_API_KEY"])
 # LearnLM 1.5 Pro Experimental is completely free as of March 2025;
 # get your own free API key at https://aistudio.google.com/apikey
