@@ -146,14 +146,13 @@ if st.session_state.model_set:
         while current_token_count > token_limit and len(history) > 1:
             # Remove the oldest message
             oldest_message = history.pop(0)
-            current_token_count -= oldest_message.get('tokens',
-                                        len(oldest_message['parts']) // 4)
+            current_token_count -= oldest_message.get('tokens', 0)
 
         # "tokens" aren't allowed in generate_content messages
         history = [{"role": m["role"], "parts": m["parts"]}
                    for m in history]
 
-        print("history length:", len(history))
+        print("history length:", len(history)) ### for debugging
 
         response = None  # Initialize response
         for delay in [5, 10, 20, 30]:
