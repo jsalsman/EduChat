@@ -130,15 +130,19 @@ if st.session_state.model_set:
                     st.write(f"Uploaded file '{file.display_name}' type {file.mime_type} with {token_count} tokens as: {file.uri}")
                     st.session_state.messages.append({"role": "user", "parts": file, "tokens": token_count})
 
-        st.session_state.messages.append({"role": "user", "parts": user_input})
+        # Add message with token count for text input
+        st.session_state.messages.append({
+            "role": "user", 
+            "parts": user_input,
+            "tokens": len(user_input) // 4
+        })
         with st.chat_message("user"):
             st.write(user_input)
 
         # Trim history to avoid exceeding token limit
         token_limit = 32500  # actually 32767, but conservative
         history = st.session_state.messages
-        current_token_count = sum(m.get('tokens',
-                                        len(m['parts']) // 4) for m in history)
+        current_token_count = sum(m.get('tokens', 0) for m in history)
         while current_token_count > token_limit and len(history) > 1:
             # Remove the oldest message
             oldest_message = history.pop(0)
