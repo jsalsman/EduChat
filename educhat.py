@@ -101,8 +101,11 @@ if st.session_state.model_set:  # Main interaction loop
         with st.chat_message(role):
             if isinstance(message["parts"][0], GenAIFile):
                 file = message["parts"][0]
+                token_count = message.get("tokens", 0)
+                size_bytes = message.get("size_bytes", 0)
                 st.write(f"Uploaded file '{file.display_name}' type "
-                         f"{file.mime_type} with {file.size_bytes} bytes")
+                         f"{file.mime_type} with {token_count} tokens "
+                         f"({size_bytes} bytes)")
             else:
                 st.write(message["parts"][0])
 
@@ -121,9 +124,11 @@ if st.session_state.model_set:  # Main interaction loop
                     token_count = st.session_state.model.count_tokens(
                                                             file).total_tokens
                     st.write(f"Uploaded file '{file.display_name}' "
-                             f"type {file.mime_type} with {token_count} tokens")
+                             f"type {file.mime_type} with {token_count} tokens "
+                             f"({file.size_bytes} bytes)")
                     st.session_state.messages.append({"role": "user",
-                                        "parts": [file], "tokens": token_count})
+                                        "parts": [file], "tokens": token_count,
+                                        "size_bytes": file.size_bytes})
 
         # Add message with token count for text input
         st.session_state.messages.append({
