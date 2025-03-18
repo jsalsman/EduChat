@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 # MIT License -- see the LICENSE file
-# v1.0.0. Also at: https://github.com/jsalsman/EduChat
+# v1.0.1. Also at: https://github.com/jsalsman/EduChat
 
 # System prompt:
 INSTRUCTIONS = """
@@ -35,10 +35,10 @@ genai.configure(api_key=environ["FREE_GEMINI_API_KEY"])
 
 # Add custom CSS to remove top padding
 st.html("""<style>
-  .block-container { padding-top: 2.2rem !important; }
+  .block-container { padding-top: 3.2rem !important; }
 </style>""")
 
-st.header("EduChat: A Constrained LearnLM Tutor")
+st.subheader("EduChat: A Constrained LearnLM Tutor")
 st.markdown("""This chatbot uses Google's free [LearnLM 1.5 Pro
 Experimental](https://ai.google.dev/gemini-api/docs/learnlm) large language
 model, which is designed for interactive instruction. It has a lot of great
