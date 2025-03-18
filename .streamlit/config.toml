@@ -5,3 +5,10 @@ address = "0.0.0.0"
 port = 5000
 enableCORS = true
 enableXsrfProtection = false
+
+[browser]
+gatherUsageStats = true
+
+[logger]
+level = "info"
+messageFormat = "%(asctime)s %(message)s"
