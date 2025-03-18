@@ -23,12 +23,18 @@ import google.generativeai as genai  # pip install google-generativeai
 from google.generativeai.types import File as GenAIFile
 from os import environ  # API key access from Replit's Secrets tool on far left
 import streamlit as st  # Streamlet app framework
+from sys import stderr  # for logging errors from bad streaming chunks
 from time import sleep  # for rate limiting API retries
 
 # Initialize Google genai API for with an API key
 genai.configure(api_key=environ["FREE_GEMINI_API_KEY"])
 # LearnLM 1.5 Pro Experimental is completely free as of March 2025;
 # get your own free API key at https://aistudio.google.com/apikey
+
+# Add custom CSS to remove top padding
+st.html("""<style>
+  .block-container { padding-top: 2.2rem !important; }
+</style>""")
 
 st.header("Constrained LearnLM Tutor")
 st.markdown("""This chatbot uses Google's free [LearnLM 1.5 Pro
@@ -57,10 +63,11 @@ if "subject" not in st.session_state:  # Initialize state
     st.session_state.model_set = False
 
 if not st.session_state.model_set:  # Initialize model
-    st.session_state.model_name = st.segmented_control("Use model:",
-        ["learnlm-1.5-pro-experimental", "gemini-2.0-flash-lite",
-         "gemini-2.0-pro-exp-02-05"], default="learnlm-1.5-pro-experimental",
-        format_func=lambda model: ("LearnLM 1.5 Pro Experimental" 
+    st.session_state.model_name = st.segmented_control(
+        "Select any of these free models:", ["learnlm-1.5-pro-experimental",
+          "gemini-2.0-flash-lite", "gemini-2.0-pro-exp-02-05"],
+        default="learnlm-1.5-pro-experimental", format_func=lambda model:
+            ("LearnLM 1.5 Pro Experimental" 
                              if model == "learnlm-1.5-pro-experimental" else
             "Gemini 2.0 Flash Lite" if model == "gemini-2.0-flash-lite" else
             "Gemini 2.0 Pro Experimental 02-05"))
@@ -168,9 +175,8 @@ if st.session_state.model_set:  # Main interaction loop
                 try:
                     st.write_stream((chunk.text for chunk in response))
                 except ValueError as e:
-                    #print("A response chunk caused an error and was skipped.")
-                    pass
-
+                    print("A response chunk caused an error: {e}",
+                          file=stderr)
             st.session_state.messages.append({
                 "role": "model", 
                 "parts": [response.text],
@@ -178,10 +184,3 @@ if st.session_state.model_set:  # Main interaction loop
             })
         else:
             st.error("Failed to reach the LLM after retrying.")
-
-# Add custom CSS to remove top padding
-st.html("""<style>
-.block-container {
-    padding-top: 2.2rem !important;
-}
-</style>""")
