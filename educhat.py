@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 # MIT License -- see the LICENSE file
-# v1.0.2. Also at: https://github.com/jsalsman/EduChat
+# v1.0.3. Also at: https://github.com/jsalsman/EduChat
 
 # System prompt:
 INSTRUCTIONS = """
@@ -132,9 +132,10 @@ if st.session_state.model_set:  # Main interaction loop
                                              mime_type=f.type, resumable=False)
                     token_count = st.session_state.model.count_tokens(
                                                             file).total_tokens
-                    st.write(f"Uploaded file '{file.display_name}' "
-                             f"type {file.mime_type} with {token_count} tokens "
-                             f"({file.size_bytes} bytes)")
+                    with st.chat_message("user"):
+                        st.write(f"Uploaded file '{file.display_name}' "
+                                 f"type {file.mime_type} with {token_count}"
+                                 f" tokens ({file.size_bytes} bytes)")
                     st.session_state.messages.append({"role": "user",
                                         "parts": [file], "tokens": token_count,
                                         "size_bytes": file.size_bytes})
