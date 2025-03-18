@@ -127,7 +127,7 @@ if st.session_state.model_set:
                     file = genai.upload_file(f, display_name=f.name, mime_type=f.type, resumable=False)
                     # Count tokens using the API
                     token_count = st.session_state.model.count_tokens(file).total_tokens
-                    st.write(f"Uploaded file '{file.display_name}' type {file.mime_type} with {token_count} tokens as: {file.uri}")
+                    st.write(f"Uploaded file '{file.display_name}' type {file.mime_type} with {token_count} tokens")
                     st.session_state.messages.append({"role": "user", "parts": file, "tokens": token_count})
 
         # Add message with token count for text input
