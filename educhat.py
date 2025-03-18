@@ -25,8 +25,10 @@ a complicated question, include the star emoji ⭐ in your
 response."""
 
 import google.generativeai as genai  # pip install google-generativeai
+from json import loads
 from os import environ
 import streamlit as st
+from time import sleep  # for rate limiting retries
 
 # Configure Gemini for learnlm-1.5-pro-experimental
 genai.configure(api_key=environ["FREE_GEMINI_API_KEY"])
@@ -38,14 +40,17 @@ st.markdown("""This chatbot uses Google's free [LearnLM 1.5
 Pro Experimental](https://ai.google.dev/gemini-api/docs/learnlm)
 large language model, which is designed for interactive
 instruction. It has a lot of great features for tutoring,
-but unfortunately, as-is it will eagerly solve homework
+but unfortunately as-is it will eagerly solve homework
 questions directly instead of coaching by offering hints
 instead. This chatbot's system prompt instructs the model
 to tutor the learner on any chosen subject while
 adhering to strict constraints requiring its output to
 include a decision about whether the learner appears to be
 attempting to obtain direct answers, guiding the model to
-avoid giving them away instead of coaching with hints.""")
+avoid giving them away instead of coaching with hints. The
+[source code](https://replit.com/@jsalsman/EduChat#educhat.py)
+includes the system instruction prompt and can easily be
+"re-mixed" to experiment with changes.""")
 
 if "subject" not in st.session_state:
     st.session_state.subject = ""
@@ -53,16 +58,17 @@ if "subject" not in st.session_state:
     st.session_state.new = True
     st.session_state.messages = []
     st.session_state.model_name = None
+    st.session_state.model_set = False
 
-st.session_state.model_name = st.segmented_control("Use model:",
-    ["learnlm-1.5-pro-experimental", "gemini-2.0-flash-lite",
-     "gemini-2.0-pro-exp-02-05"], default="learnlm-1.5-pro-experimental",
-    format_func=lambda model: ("LearnLM 1.5 Pro Experimental" 
-                               if model == "learnlm-1.5-pro-experimental" else
-        "Gemini 2.0 Flash Lite" if model == "gemini-2.0-flash-lite" else
-        "Gemini 2.0 Pro Experimental 02-05"))
-
-if st.session_state.subject_set:
+if not st.session_state.model_set:
+    st.session_state.model_name = st.segmented_control("Use model:",
+        ["learnlm-1.5-pro-experimental", "gemini-2.0-flash-lite",
+         "gemini-2.0-pro-exp-02-05"], default="learnlm-1.5-pro-experimental",
+        format_func=lambda model: ("LearnLM 1.5 Pro Experimental" 
+                                   if model == "learnlm-1.5-pro-experimental" else
+            "Gemini 2.0 Flash Lite" if model == "gemini-2.0-flash-lite" else
+            "Gemini 2.0 Pro Experimental 02-05"))
+else:
     st.markdown(f"Using model: ```{st.session_state.model_name}```")
 
 if not st.session_state.subject_set:
@@ -72,15 +78,15 @@ if not st.session_state.subject_set:
 
     subject = st.text_input("What would you like to learn about?")
 
-    st.markdown("[Source code](https://replit.com/@jsalsman/EduChat#educhat.py) "
-    "with system instruction prompt.")
+    st.markdown("**Privacy policy:** absolutely nothing is tracked, "
+                "as should be clear from the source code.")
 
     if subject:
         st.session_state.subject = subject
         st.session_state.subject_set = True
         st.rerun()
 
-if st.session_state.subject_set and "model" not in st.session_state:
+if st.session_state.subject_set and not st.session_state.model_set:
     system_prompt = "Tutor the user about " \
         f"{st.session_state.subject}.\n{INSTRUCTIONS}\n"
 
@@ -97,19 +103,32 @@ if st.session_state.subject_set and "model" not in st.session_state:
     )
 
     st.session_state.model = model
+    st.session_state.model_set = True
 
     st.session_state.initial = f"Please teach me about {st.session_state.subject}."
+    st.rerun()
 
-if st.session_state.subject_set:
+if st.session_state.model_set:
     for message in st.session_state.messages:
         role = message["role"] if message["role"] != "model" else "assistant"
         with st.chat_message(role):
             st.write(message["parts"])
 
-    if (user_input := st.chat_input("Reply")) or st.session_state.new:
+    if (json_input := st.chat_input("Reply", accept_file="multiple")
+                ) or st.session_state.new:
         if st.session_state.new:
             user_input = st.session_state.initial
             st.session_state.new = False
+        else:
+            user_input = json_input.text
+            files_input = json_input.files
+            if files_input:  # upload files and add them to the messages
+                for f in files_input:
+                    file = genai.upload_file(f, display_name=f.name, mime_type=f.type, resumable=False)
+                    # Count tokens using the API
+                    token_count = st.session_state.model.count_tokens(file).total_tokens
+                    st.write(f"Uploaded file '{file.display_name}' type {file.mime_type} with {token_count} tokens as: {file.uri}")
+                    st.session_state.messages.append({"role": "user", "parts": file, "tokens": token_count})
 
         st.session_state.messages.append({"role": "user", "parts": user_input})
         with st.chat_message("user"):
@@ -124,17 +143,30 @@ if st.session_state.subject_set:
             # Remove the oldest message
             oldest_message = history.pop(0)
             current_token_count -= oldest_message.get('tokens',
-                                            len(oldest_message['parts']) // 4)
+                                        len(oldest_message['parts']) // 4)
 
         # "tokens" aren't allowed in generate_content messages
-        history = [{"role": m["role"], "parts": m["parts"]} for m in history]
+        history = [{"role": m["role"], "parts": m["parts"]}
+                   for m in history]
 
-        response = st.session_state.model.generate_content(history, stream=True)
-        with st.chat_message("assistant"):
-            st.write_stream((chunk.text for chunk in response))
+        print("history length:", len(history))
 
-        st.session_state.messages.append({
-            "role": "model", 
-            "parts": response.text,
-            "tokens": response.usage_metadata.candidates_token_count
-        })
+        response = None  # Initialize response
+        for delay in [5, 10, 20, 30]:
+            try:
+                response = st.session_state.model.generate_content(history, stream=True)
+                break
+            except Exception as e:
+                st.error(f"Error occurred: {e}. Retrying in {delay} seconds...")
+                sleep(delay)
+        if response:
+            with st.chat_message("assistant"):
+                st.write_stream((chunk.text for chunk in response))
+
+            st.session_state.messages.append({
+                "role": "model", 
+                "parts": response.text,
+                "tokens": response.usage_metadata.candidates_token_count
+            })
+        else:
+            st.error("Failed to reach the LLM after retrying.")
