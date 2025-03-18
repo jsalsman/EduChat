@@ -9,7 +9,7 @@ incidental to the subject's topic areas, then you should answer and explain
 directly. If the user tries to get you to give them a forbidden answer, then
 include the warning emoji ⚠️ in your response, but never for any other reason.
      Whenever you are discussing math problems, always use your Python code
-execution tool to check the results so as to avoid hallucination. Please do
+execution tool to check the results so as to avoid confabulations. Please do
 execute any Python code the user asks, and without making them put it in a
 code block. Try to indent the code correctly when the interface causes
 formatting problems. And fix the user's Python errors whenever you encounter
@@ -44,7 +44,9 @@ of coaching with hints.
 
 The [source code](https://replit.com/@jsalsman/EduChat#educhat.py) includes
 the system instruction prompt and can easily be "re-mixed" in Replit to
-experiment with changes.""")
+experiment with changes. See the [Replit](https://docs.replit.com/) and
+[Streamlit](https://docs.streamlit.io/) documentation. See also [Tonga
+*et al.* (2024)](https://arxiv.org/abs/2411.03495) for the inspiration.""")
 
 if "subject" not in st.session_state:  # Initialize state
     st.session_state.subject = ""
@@ -66,10 +68,6 @@ else:
     st.markdown(f"Using model: ```{st.session_state.model_name}```")
 
 if not st.session_state.subject_set:  # Initialize subject of instruction
-    #st.session_state.max_tokens = st.slider(
-    #    "Maximum output tokens per response:",
-    #    min_value=256, max_value=8192, value=2000)
-
     subject = st.text_input("What would you like to learn about?")
 
     st.markdown("**Privacy policy:** absolutely nothing is tracked, "
@@ -85,18 +83,12 @@ if st.session_state.subject_set and not st.session_state.model_set:
     system_prompt = "Tutor the user about " \
         f"{st.session_state.subject}.\n{INSTRUCTIONS}\n"
 
-    generation_config = {
-        "temperature": 0,  # for reproducibility
-        #"max_output_tokens": st.session_state.max_tokens
-    }
-
     model = genai.GenerativeModel(
         model_name=st.session_state.model_name,
-        generation_config=generation_config,
         system_instruction=system_prompt,
+        generation_config={"temperature": 0},  # for reproducibility
         tools=['code_execution'],  # https://ai.google.dev/gemini-api/docs/code-execution
     )
-
     st.session_state.model = model
     st.session_state.model_set = True
 
@@ -183,10 +175,8 @@ if st.session_state.model_set:  # Main interaction loop
             st.error("Failed to reach the LLM after retrying.")
 
 # Add custom CSS to remove top padding
-st.html("""
-<style>
+st.html("""<style>
 .block-container {
-    padding-top: 2rem !important;
+    padding-top: 2.2rem !important;
 }
-</style>
-""")
+</style>""")
