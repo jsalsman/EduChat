@@ -112,7 +112,11 @@ if st.session_state.model_set:
     for message in st.session_state.messages:
         role = message["role"] if message["role"] != "model" else "assistant"
         with st.chat_message(role):
-            st.write(message["parts"])
+            if isinstance(message["parts"], genai.File):
+                file = message["parts"]
+                st.write(f"Uploaded file '{file.display_name}' type {file.mime_type} with {file.size_bytes} bytes")
+            else:
+                st.write(message["parts"])
 
     if (json_input := st.chat_input("Reply", accept_file="multiple")
                 ) or st.session_state.new:
