@@ -136,12 +136,12 @@ if st.session_state.model_set:
                     st.write(f"Uploaded file '{file.display_name}' "
                              f"type {file.mime_type} with {token_count} tokens")
                     st.session_state.messages.append({"role": "user",
-                                        "parts": file, "tokens": token_count})
+                                        "parts": [file], "tokens": token_count})
 
         # Add message with token count for text input
         st.session_state.messages.append({
             "role": "user", 
-            "parts": user_input,
+            "parts": [user_input],
             "tokens": len(user_input) // 4
         })
         with st.chat_message("user"):
@@ -156,17 +156,12 @@ if st.session_state.model_set:
             oldest_message = history.pop(0)
             current_token_count -= oldest_message.get('tokens', 0)
 
-        # Format messages for the model
-        formatted_history = []
-        for m in history:
-            formatted_history.append({"role": m["role"], "parts": [m["parts"]]})
-
-        print("history length:", len(formatted_history)) ### for debugging
+        print("history length:", len(history)) ### for debugging
 
         response = None  # Initialize response
         for delay in [5, 10, 20, 30]:
             try:
-                response = st.session_state.model.generate_content(formatted_history, stream=True)
+                response = st.session_state.model.generate_content(history, stream=True)
                 break
             except Exception as e:
                 st.error(f"Error occurred: {e}. Retrying in {delay} seconds...")
@@ -177,7 +172,7 @@ if st.session_state.model_set:
 
             st.session_state.messages.append({
                 "role": "model", 
-                "parts": response.text,
+                "parts": [response.text],
                 "tokens": response.usage_metadata.candidates_token_count
             })
         else:
