@@ -181,3 +181,12 @@ if st.session_state.model_set:  # Main interaction loop
             })
         else:
             st.error("Failed to reach the LLM after retrying.")
+
+# Add custom CSS to remove top padding
+st.html("""
+<style>
+.block-container {
+    padding-top: 2rem !important;
+}
+</style>
+""")
