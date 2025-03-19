@@ -96,7 +96,7 @@ if st.session_state.subject_set and not st.session_state.model_set:
         model_name=st.session_state.model_name,
         system_instruction=system_prompt,
         generation_config={"temperature": 0},  # for reproducibility
-        tools=['code_execution', 'web_search'],  # Adding web_search tool
+        tools=['code_execution'],  # https://ai.google.dev/gemini-api/docs/code-execution
     )
     st.session_state.model = model
     st.session_state.model_set = True
