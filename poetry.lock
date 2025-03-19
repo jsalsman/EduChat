@@ -54,27 +54,6 @@ tests = ["attrs[tests-no-zope]", "zope-interface"]
 tests-no-zope = ["cloudpickle", "hypothesis", "mypy (>=1.1.1)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "pytest-xdist[psutil]"]
 
 [[package]]
-name = "beautifulsoup4"
-version = "4.12.3"
-description = "Screen-scraping library"
-optional = false
-python-versions = ">=3.6.0"
-files = [
-    {file = "beautifulsoup4-4.12.3-py3-none-any.whl", hash = "sha256:b80878c9f40111313e55da8ba20bdba06d8fa3969fc68304167741bbf9e082ed"},
-    {file = "beautifulsoup4-4.12.3.tar.gz", hash = "sha256:74e3d1928edc070d21748185c46e3fb33490f22f52a3addee9aee0f4f7781051"},
-]
-
-[package.dependencies]
-soupsieve = ">1.2"
-
-[package.extras]
-cchardet = ["cchardet"]
-chardet = ["chardet"]
-charset-normalizer = ["charset-normalizer"]
-html5lib = ["html5lib"]
-lxml = ["lxml"]
-
-[[package]]
 name = "blinker"
 version = "1.6.3"
 description = "Fast, simple object-to-object and broadcast signaling"
@@ -1275,17 +1254,6 @@ files = [
 ]
 
 [[package]]
-name = "soupsieve"
-version = "2.6"
-description = "A modern CSS selector implementation for Beautiful Soup."
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "soupsieve-2.6-py3-none-any.whl", hash = "sha256:e72c4ff06e4fb6e4b5a9f0f55fe6e81514581fca1515028625d0f299c602ccc9"},
-    {file = "soupsieve-2.6.tar.gz", hash = "sha256:e2e68417777af359ec65daac1057404a3c8a5455bb8abc36f1a9866ab1a51abb"},
-]
-
-[[package]]
 name = "streamlit"
 version = "1.43.2"
 description = "A faster way to build and share data apps"
@@ -1488,4 +1456,4 @@ watchmedo = ["PyYAML (>=3.10)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10.0,<3.11"
-content-hash = "fecdd0204d8c790ec20fc436cd9e64db33c4b557b02db09b32eb83fdb504a03b"
+content-hash = "82ee10f3ddf01ed33381894aad5090ede562661075e64963f19637bd4529b564"

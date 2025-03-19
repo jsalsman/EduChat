@@ -8,7 +8,6 @@ authors = ["Your Name <you@example.com>"]
 python = ">=3.10.0,<3.11"
 streamlit = "^1.27.2"
 google-generativeai = "^0.8.4"
-beautifulsoup4 = "4.12.3"
 
 [tool.pyright]
 # https://github.com/microsoft/pyright/blob/main/docs/configuration.md
