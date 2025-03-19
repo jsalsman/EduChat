@@ -72,7 +72,7 @@ st.html("""
   setupObservers();
   document.addEventListener('click', focusInput);
 </script>
-""", height=0)
+""")
 
 st.subheader("EduChat: A Constrained LearnLM Tutor")
 st.markdown("""This chatbot uses Google's free [LearnLM 1.5 Pro
