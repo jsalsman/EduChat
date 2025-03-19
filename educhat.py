@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 # MIT License -- see the LICENSE file
-# v1.0.5. For stable releases see: https://github.com/jsalsman/EduChat
+# v1.0.6. For stable releases see: https://github.com/jsalsman/EduChat
 
 # System prompt suffix:
 INSTRUCTIONS = """
@@ -28,8 +28,19 @@ import streamlit as st  # Streamlit app framework
 from sys import stderr  # for logging errors
 from time import sleep  # for rate limiting API retries
 
-# Initialize Google genai API with an API key
-genai.configure(api_key=environ["FREE_GEMINI_API_KEY"])
+# Initialize the Google genai API with an API key
+if 'key_set' not in st.session_state:
+    try:
+        genai.configure(api_key=environ["FRE_GEMINI_API_KEY"])
+        st.session_state.key_set = True
+    except KeyError:
+        st.error("API key not found. Please [get your own free API "
+            "key](https://aistudio.google.com/apikey) and enter it here.")
+        api_key_input = st.text_input("Enter your Gemini API key:")
+        if api_key_input:
+            genai.configure(api_key=api_key_input)
+            st.session_state.key_set = True
+            st.rerun()
 # LearnLM 1.5 Pro Experimental is completely free as of March 2025;
 # get your own free API key at https://aistudio.google.com/apikey
 
