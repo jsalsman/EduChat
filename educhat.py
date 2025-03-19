@@ -2,7 +2,7 @@
 # MIT License -- see the LICENSE file
 # v1.0.5. For stable releases see: https://github.com/jsalsman/EduChat
 
-# System prompt:
+# System prompt suffix:
 INSTRUCTIONS = """
 Only coach without giving away answers. It's okay to give hints. When the user
 asks you a question, if you think it may be a homework or quiz question, then
@@ -90,13 +90,13 @@ if not st.session_state.subject_set:  # Initialize subject of instruction
 if st.session_state.subject_set and not st.session_state.model_set:
     # Initialize model
     system_prompt = "Tutor the user about " \
-        f"{st.session_state.subject}.\n{INSTRUCTIONS}\n"
+        f"{st.session_state.subject}.\n{INSTRUCTIONS}\n"  # append suffix above
 
     model = genai.GenerativeModel(
         model_name=st.session_state.model_name,
         system_instruction=system_prompt,
         generation_config={"temperature": 0},  # for reproducibility
-        tools=['code_execution'],  # https://ai.google.dev/gemini-api/docs/code-execution
+        tools=['code_execution']  # https://ai.google.dev/gemini-api/docs/code-execution
     )
     st.session_state.model = model
     st.session_state.model_set = True
@@ -150,9 +150,9 @@ if st.session_state.model_set:  # Main interaction loop
             st.write(user_input)
 
         # Trim history to avoid exceeding token limit
-        token_limit = 32500  # actually 32767, but conservative
+        token_limit = 32500  # actually 32767 for LearnLM, but conservative
         history = st.session_state.messages
-        current_token_count = sum(m.get('tokens', 0) for m in history)
+        current_token_count = sum(m.get('tokens', 200) for m in history)
         while current_token_count > token_limit and len(history) > 1:
             # Remove the oldest message
             oldest_message = history.pop(0)
@@ -160,8 +160,6 @@ if st.session_state.model_set:  # Main interaction loop
 
         # "tokens" aren't allowed in generate_content messages
         history = [{"role": m["role"], "parts": m["parts"]} for m in history]
-
-        #print("history length:", len(history)) ### for debugging
 
         response = None  # Initialize response
         for delay in [5, 10, 20, 30]:

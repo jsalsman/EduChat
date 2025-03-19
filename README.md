@@ -57,4 +57,58 @@ MIT License - See the LICENSE file for details
 
 ## Contributing
 
-Feel free to fork this repo and customize it for your own educational purposes!
+Feel free to fork this repo and customize it.
+
+## Program Logic
+
+The program follows this logical sequence:
+
+Initial Setup (Lines 1-40):
+
+Defines the system instructions for the tutor
+Imports required libraries
+Configures Google's GenerativeAI with API key
+Sets up Streamlit interface styling
+State Management (Lines 41-47):
+
+Initializes session state variables for:
+Subject of study
+New session flag
+Message history
+Model selection state
+Model Selection (Lines 48-58):
+
+Provides a segmented control to select between different LLM models
+Displays current model selection
+Subject Initialization (Lines 59-69):
+
+Prompts user for learning subject
+Includes privacy policy
+Triggers rerun when subject is set
+Model Initialization (Lines 70-88):
+
+Creates system prompt combining subject and instructions
+Configures model with:
+Zero temperature for consistency
+Code execution capability
+Sets up initial teaching prompt
+Main Interaction Loop (Lines 89-184):
+
+Displays message history
+Handles file uploads
+Manages token limits
+Processes user input
+Generates and streams AI responses
+Includes error handling and retry logic
+Updates conversation history
+Token Management (Lines 128-137):
+
+Tracks token usage
+Trims conversation history to prevent exceeding limits
+Maintains approximate token counts
+Error Handling (Lines 150-184):
+
+Implements exponential backoff for API retries
+Provides user feedback for errors
+Handles response streaming failures
+The program uses Streamlit's session state to maintain conversation context and Google's GenerativeAI API for response generation, while enforcing educational constraints through the system prompt.
