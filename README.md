@@ -21,8 +21,8 @@ The source code is entirely in the [educhat.py](educhat.py) file. None of the ot
 
 ## Getting Started
 
-1. Fork this repo to create your own instance
-2. Add your Google API key in the Secrets tool (Environment Variables) with the key name `FREE_GEMINI_API_KEY`
+1. Visit the [Replit app](https://replit.com/@jsalsman/EduChat) and click "Remix", or fork this repo to create your own instance
+2. Add your own Google API key in Replit's Secrets tool (environment variables) with the key name `FREE_GEMINI_API_KEY`
 3. Click the "Run" button to start the Streamlit app
 
 ## Requirements
