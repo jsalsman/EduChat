@@ -34,9 +34,45 @@ genai.configure(api_key=environ["FREE_GEMINI_API_KEY"])
 # get your own free API key at https://aistudio.google.com/apikey
 
 # Add custom CSS to remove top padding
-st.html("""<style>
+st.html("""
+<style>
   .block-container { padding-top: 3.2rem !important; }
-</style>""")
+</style>
+<script>
+  // Auto-focus chat input
+  const focusInput = () => {
+    const input = document.querySelector('.stChatInputContainer input');
+    if (input) input.focus();
+  };
+  
+  // Auto-scroll to bottom
+  const scrollToBottom = () => {
+    const messages = document.querySelector('.stChatMessageContainer');
+    if (messages) messages.scrollTop = messages.scrollHeight;
+  };
+
+  // Set up observers
+  const observer = new MutationObserver(() => {
+    scrollToBottom();
+    focusInput();
+  });
+
+  // Start observing when elements are available
+  const setupObservers = () => {
+    const messages = document.querySelector('.stChatMessageContainer');
+    if (messages) {
+      observer.observe(messages, { childList: true, subtree: true });
+      scrollToBottom();
+      focusInput();
+    } else {
+      setTimeout(setupObservers, 100);
+    }
+  };
+
+  setupObservers();
+  document.addEventListener('click', focusInput);
+</script>
+""", height=0)
 
 st.subheader("EduChat: A Constrained LearnLM Tutor")
 st.markdown("""This chatbot uses Google's free [LearnLM 1.5 Pro
