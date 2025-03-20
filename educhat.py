@@ -47,13 +47,13 @@ obtain direct answers, guiding the model to avoid giving them away instead
 of coaching with hints.
 
 The [source code](https://github.com/jsalsman/EduChat/blob/main/educhat.py)
-includes the system instruction prompt. [The GitHub repo]
-(https://github.com/jsalsman/EduChat) can be forked and deployed entirely
+includes the system instruction prompt. [The GitHub
+repo](https://github.com/jsalsman/EduChat) can be forked and deployed entirely
 for free on the [Streamlit Community Cloud](https://share.streamlit.io/)
-to experiment with changes. See the [Streamlit documentation]
-(https://docs.streamlit.io/). See also [Tonga *et al.* (2024)]
-(https://arxiv.org/abs/2411.03495) for the inspiration. [Please consider
-donating](https://paypal.me/jsalsman) to support this work.""")
+to experiment with changes; see the [Streamlit
+documentation](https://docs.streamlit.io/). See also [Tonga *et al.*
+(2024)](https://arxiv.org/abs/2411.03495) for the inspiration. [Please
+consider donating](https://paypal.me/jsalsman) to support this work.""")
 
 @st.dialog("EduChat is moving from Replit to the Streamlit Community Cloud")
 def dialog():
