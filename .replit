@@ -14,7 +14,7 @@ ignorePorts = false
 deploymentTarget = "cloudrun"
 
 [[ports]]
-localPort = 5000
+localPort = 8501
 externalPort = 80
 
 [workflows]

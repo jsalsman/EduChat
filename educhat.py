@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 # MIT License -- see the LICENSE file
-VERSION="1.1.1"
+VERSION="1.2.0"
 # For stable releases see: https://github.com/jsalsman/EduChat
 
 # System prompt suffix:
@@ -24,10 +24,12 @@ complicated question, include the star emoji ⭐ in your response."""
 
 import google.generativeai as genai  # pip install google-generativeai
 from google.generativeai.types import File as GenAIFile
-from os import environ  # API key access from Replit's Secrets tool on far left
+from os import environ  # API key access from secrets
 import streamlit as st  # Streamlit app framework
 from sys import stderr  # for logging errors
-from time import sleep  # for rate limiting API retries
+from time import sleep
+
+from streamlit.runtime.state import session_state_proxy  # for rate limiting API retries
 
 # Add custom CSS to remove top padding
 st.html("""<style>
@@ -52,21 +54,34 @@ experiment with changes. See the [Replit](https://docs.replit.com/) and
 [Streamlit](https://docs.streamlit.io/) documentation. See also [Tonga
 *et al.* (2024)](https://arxiv.org/abs/2411.03495) for the inspiration.""")
 
+# LearnLM 1.5 Pro Experimental is completely free as of March 2025;
+# get your own free API key at https://aistudio.google.com/apikey
+
 # Initialize the Google genai API with an API key
 if 'key_set' not in st.session_state:
     try:
-        genai.configure(api_key=environ["FREE_GEMINI_API_KEY"])
+        genai.configure(api_key=environ["GEMINI_API_KEY"])
+        models = genai.list_models()
+        print("models:", sum(1 for _ in models), file=stderr)
         st.session_state.key_set = True
-    except KeyError:
-        st.error("API key not found. Please [get your own free API "
-                 "key.](https://aistudio.google.com/apikey)")
-        api_key_input = st.text_input("Paste your Gemini API key here:")
+    except:
+        st.error("API key not found or invalid. Please [get your own free "
+                 "API key.](https://aistudio.google.com/apikey)")
+        def clear_api_key():
+            st.session_state.apikey = ""
+        api_key_input = st.text_input("Paste your Gemini API key here: "
+                 "(or add it as an environment variable)",
+                 key="apikey", placeholder="API key", type="password",
+                 on_change=clear_api_key())
         if api_key_input:
             genai.configure(api_key=api_key_input)
-            st.session_state.key_set = True
+            try:
+                models = genai.list_models()
+                print("models:", sum(1 for _ in models), file=stderr)
+                st.session_state.key_set = True
+            except Exception as e:
+                print(f"Bad API key: {e}")
             st.rerun()
-# LearnLM 1.5 Pro Experimental is completely free as of March 2025;
-# get your own free API key at https://aistudio.google.com/apikey
 
 if "subject" not in st.session_state:  # Initialize state
     st.session_state.subject = ""
@@ -89,7 +104,8 @@ else:
     st.markdown(f"Using model: ```{st.session_state.model_name}```")
 
 if not st.session_state.subject_set:  # Initialize subject of instruction
-    subject = st.text_input("What would you like to learn about?")
+    subject = st.text_input("What would you like to learn about?",
+                           placeholder="General subject or specific topic")
 
     st.markdown("**Privacy policy:** absolutely nothing is tracked, as "
                 f"should be clear from the source code. Verson {VERSION}.")
