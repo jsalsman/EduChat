@@ -46,8 +46,8 @@ def dialog():
     st.write("This change makes it even easier to experiment with changes, "
              "by forking [the GitHub Repo]"
              "(https://github.com/jsalsman/EduChat) and [deploying your "
-             "fork](https://share.streamlit.io/). Thank you for your "
-             "understanding and consideration.")
+             "fork](https://share.streamlit.io/) entirely for free. Thank "
+             "you for your understanding and consideration.")
     st.session_state.dialoged = True
     if st.button("Continue on Replit"):
         st.rerun()
