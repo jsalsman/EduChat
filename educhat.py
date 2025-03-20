@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 # MIT License -- see the LICENSE file
-VERSION="1.2.0"
+VERSION="1.2.1"
 # For stable releases see: https://github.com/jsalsman/EduChat
 
 # System prompt suffix:
@@ -67,8 +67,8 @@ if 'key_set' not in st.session_state:
                  "API key.](https://aistudio.google.com/apikey)")
         def clear_api_key():
             st.session_state.apikey = ""
-        api_key_input = st.text_input("Paste your Gemini API key here: "
-                 "(or add it as an environment variable)",
+        api_key_input = st.text_input("Paste your Gemini API key here: (or "
+                 "add it as a secret GEMINI_API_KEY environment variable)",
                  key="apikey", placeholder="API key", type="password",
                  on_change=clear_api_key())
         if api_key_input:
