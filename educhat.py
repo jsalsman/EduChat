@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 # MIT License -- see the LICENSE file
-VERSION="1.3.2"
+VERSION="1.3.3"
 # For stable releases see: https://github.com/jsalsman/EduChat
 
 # System prompt suffix:
@@ -235,4 +235,10 @@ if st.session_state.model_set:  # Main interaction loop
                 "tokens": response.usage_metadata.candidates_token_count
             })
         else:
-            st.error("Failed to reach the LLM after retrying.")
+            st.error("Failed to reach the LLM after four retries. Wait a few "
+                     "minutes and repeat your reply. Or, to avoid these rate "
+                     "limiting problems, [fork the GitHub repo]"
+                     "(https://github.com/jsalsman/EduChat), create [your "
+                     "own Gemini API key](https://aistudio.google.com/apikey), "
+                     "and deploy your fork on the [Streamlit Community cloud]"
+                     "(https://share.streamlit.io/).")
