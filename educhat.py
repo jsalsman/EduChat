@@ -51,7 +51,7 @@ includes the full system prompt. [The GitHub
 repo](https://github.com/jsalsman/EduChat) can be forked and deployed entirely
 for free on the [Streamlit Community Cloud](https://share.streamlit.io/)
 to experiment with changes; see the [Streamlit
-documentation](https://docs.streamlit.io/). See also [Tonga *et al.*
+docs](https://docs.streamlit.io/). See also [Tonga *et al.*
 (2024)](https://arxiv.org/abs/2411.03495) for the inspiration. [Please
 consider donating](https://paypal.me/jsalsman) to support this work.""")
 
