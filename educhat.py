@@ -34,6 +34,11 @@ st.html("""<style>
   .block-container { padding-top: 3.2rem !important; }
 </style>""")
 
+# Detect if running on Replit
+is_replit = '.replit.app' in st.experimental_get_query_params().get('_sthost', [''])[0]
+if is_replit:
+    st.dialog("Welcome to EduChat on Replit! 🚀", "Continue")
+
 st.subheader("EduChat: A Constrained LearnLM Tutor")
 st.markdown("""This chatbot uses Google's free [LearnLM 1.5 Pro
 Experimental](https://ai.google.dev/gemini-api/docs/learnlm) large language
