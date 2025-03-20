@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 # MIT License -- see the LICENSE file
-VERSION="1.2.1"
+VERSION="1.3.0"
 # For stable releases see: https://github.com/jsalsman/EduChat
 
 # System prompt suffix:
@@ -24,20 +24,35 @@ complicated question, include the star emoji ⭐ in your response."""
 
 import google.generativeai as genai  # pip install google-generativeai
 from google.generativeai.types import File as GenAIFile
-from os import environ  # API key access from secrets
+from os import environ  # API key access from secrets, and host name
 import streamlit as st  # Streamlit app framework
 from sys import stderr  # for logging errors
 from time import sleep  # for rate limiting API retries
 
-# Add custom CSS to remove top padding
+# Add CSS to reduce top padding
 st.html("""<style>
   .block-container { padding-top: 3.2rem !important; }
 </style>""")
 
-# Detect if running on Replit
-is_replit = '.replit.app' in st.experimental_get_query_params().get('_sthost', [''])[0]
-if is_replit:
-    st.dialog("Welcome to EduChat on Replit! 🚀", "Continue")
+@st.dialog("EduChat is moving from Replit to Streamlit Community Cloud")
+def dialog():
+    st.write("Due the unexpected viral popularity of this web app, my Replit "
+             "hosting bill has grown substantially since its announcment. "
+             "So please  <a href='https://edu-chat.streamlit.app/' "
+             "target='_self'>use it on the Streamlit Community Cloud</a>  "
+             "instead, and [consider donating](https://paypal.me/jsalsman) "
+             "a few dolars to support the app and help cover my surprise "
+             "Replit charges.", unsafe_allow_html=True)
+    st.write("This change makes it even easier to experiment with changes, "
+             "by forking [the GitHub Repo]"
+             "(https://github.com/jsalsman/EduChat) and [deploying your "
+             "fork](https://share.streamlit.io/). Thank you for your "
+             "understanding and consideration.")
+    st.session_state.dialoged = True
+    if st.button("Continue on Replit"):
+        st.rerun()
+if "dialoged" not in st.session_state and ".replit." in str(environ):
+    dialog()
 
 st.subheader("EduChat: A Constrained LearnLM Tutor")
 st.markdown("""This chatbot uses Google's free [LearnLM 1.5 Pro
@@ -55,7 +70,8 @@ The [source code](https://replit.com/@jsalsman/EduChat#educhat.py) includes
 the system instruction prompt and can easily be "remixed" in Replit to
 experiment with changes. See the [Replit](https://docs.replit.com/) and
 [Streamlit](https://docs.streamlit.io/) documentation. See also [Tonga
-*et al.* (2024)](https://arxiv.org/abs/2411.03495) for the inspiration.""")
+*et al.* (2024)](https://arxiv.org/abs/2411.03495) for the inspiration.
+[Please consider donating](https://paypal.me/jsalsman) to support.""")
 
 # LearnLM 1.5 Pro Experimental is completely free as of March 2025;
 # get your own free API key at https://aistudio.google.com/apikey
