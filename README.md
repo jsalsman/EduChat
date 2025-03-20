@@ -67,53 +67,51 @@ MIT License - See the LICENSE file for details
 Feel free to fork this repo and customize it, and deploy entirely for free on the [Streamlit Community Cloud](https://share.streamlit.io/).
 
 ## Program Logic
+1. **Initial Setup** (Lines 1-56):
+   - Defines the system instructions for the tutor (Lines 7-23)
+   - Imports required libraries (Lines 25-30)
+   - Configures Streamlit interface styling (Lines 32-35)
+   - Sets up app header and description (Lines 37-56)
 
-1. **Initial Setup** (Lines 1-50):
-   - Defines the system instructions for the tutor
-   - Imports required libraries
-   - Configures Google's GenerativeAI with API key
-   - Sets up Streamlit interface styling
+2. **Streamlit Dialog for Migration** (Lines 58-76):
+   - Provides notification about migration from Replit to Streamlit Cloud
+   - Includes donation requests and continuation options
 
-2. **State Management** (Lines 51-60):
+3. **API Key Configuration** (Lines 81-105):
+   - Attempts to configure Google's GenerativeAI with environment variable API key
+   - Provides fallback for manual API key entry
+   - Includes error handling for invalid keys
+
+4. **State Management** (Lines 107-114):
    - Initializes session state variables for:
      - Subject of study
      - New session flag
      - Message history
      - Model selection state
 
-3. **Model Selection** (Lines 61-72):
+5. **Model Selection** (Lines 115-126):
    - Provides options to select different LLM models
-   - Displays current model selection
+   - Displays current model selection when set
 
-4. **Subject Initialization** (Lines 73-83):
+6. **Subject Initialization** (Lines 127-138):
    - Prompts user for learning subject
-   - Includes privacy policy
+   - Includes privacy policy and version information
    - Triggers rerun when subject is set
 
-5. **Model Initialization** (Lines 84-102):
+7. **Model Initialization** (Lines 139-155):
    - Creates system prompt combining subject and instructions
    - Configures model with:
      - Zero temperature for consistency
      - Code execution capability
    - Sets up initial teaching prompt
 
-6. **Main Interaction Loop** (Lines 103-210):
-   - Displays message history
-   - Handles file uploads
-   - Manages token limits
-   - Processes user input
-   - Generates and streams AI responses
-   - Includes error handling and retry logic
-   - Updates conversation history
+8. **Main Interaction Loop** (Lines 157-238):
+   - Displays message history (Lines 158-169)
+   - Handles chat input and file uploads (Lines 171-192)
+   - Adds user messages to history (Lines 193-200)
+   - Manages token limits (Lines 202-212)
+   - Processes API requests with retry logic (Lines 214-224)
+   - Generates and streams AI responses (Lines 225-236)
+   - Includes error handling (Lines 221-223, 229-231, 237-238)
 
-7. **Token Management** (Lines 155-165):
-   - Tracks token usage
-   - Trims conversation history to prevent exceeding limits
-   - Maintains approximate token counts
-
-8. **Error Handling** (Lines 180-210):
-   - Implements exponential backoff for API retries
-   - Provides user feedback for errors
-   - Handles response streaming failures
-
-The program uses Streamlit's session state to maintain conversation context and Google's GenerativeAI API for response generation, while enforcing educational constraints through the system prompt.
+The program uses Streamlit's session state to maintain conversation context and Google's GenerativeAI API for response generation, while enforcing educational constraints through the system prompt defined at the beginning of the file.

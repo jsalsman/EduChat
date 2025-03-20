@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 # MIT License -- see the LICENSE file
-VERSION="1.3.1"
+VERSION="1.3.2"
 # For stable releases see: https://github.com/jsalsman/EduChat
 
 # System prompt suffix:
@@ -47,7 +47,7 @@ obtain direct answers, guiding the model to avoid giving them away instead
 of coaching with hints.
 
 The [source code](https://github.com/jsalsman/EduChat/blob/main/educhat.py)
-includes the system instruction prompt. [The GitHub
+includes the full system prompt. [The GitHub
 repo](https://github.com/jsalsman/EduChat) can be forked and deployed entirely
 for free on the [Streamlit Community Cloud](https://share.streamlit.io/)
 to experiment with changes; see the [Streamlit
@@ -62,7 +62,7 @@ def dialog():
              "So please  <a href='https://edu-chat.streamlit.app/' "
              "target='_self'>use it on the Streamlit Community Cloud</a>  "
              "instead, and [consider donating](https://paypal.me/jsalsman) "
-             "a few dolars to support the app and help cover my surprise "
+             "a few dolars to support the work and help cover my surprise "
              "Replit charges.", unsafe_allow_html=True)
     st.write("This move makes it even easier to experiment with changes, "
              "by forking [the GitHub Repo]"
@@ -145,7 +145,8 @@ if st.session_state.subject_set and not st.session_state.model_set:
         model_name=st.session_state.model_name,
         system_instruction=system_prompt,
         generation_config={"temperature": 0},  # for reproducibility
-        tools=['code_execution']  # https://ai.google.dev/gemini-api/docs/code-execution
+        tools=['code_execution']
+        # see https://ai.google.dev/gemini-api/docs/code-execution
     )
     st.session_state.model = model
     st.session_state.model_set = True
@@ -178,7 +179,7 @@ if st.session_state.model_set:  # Main interaction loop
             if files_input:  # upload files and add them to the messages
                 for f in files_input:
                     file = genai.upload_file(f, display_name=f.name,
-                                             mime_type=f.type, resumable=False)
+                                            mime_type=f.type, resumable=False)
                     token_count = st.session_state.model.count_tokens(
                                                             file).total_tokens
                     with st.chat_message("user"):
