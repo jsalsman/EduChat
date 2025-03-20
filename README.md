@@ -1,17 +1,23 @@
 
 # EduChat: A Constrained LearnLM Tutor
 
-[![Run on Replit](https://replit.com/badge/github/jsalsman/EduChat)](https://educhat.replit.app)
-[![Google Genai Version](https://img.shields.io/badge/google--genai-0.8-green)](https://googleapis.github.io/python-genai/)
-[![Streamlit Version](https://img.shields.io/badge/sreamlit-1.43-darkred)](https://streamlit.io/)
+[![Run on Streamlit Community Cloud](https://img.shields.io/badge/Run_on_Streamlit_Community_Cloud-darkgreen)](https://edu-chat.streamlit.app)
+[![Google Genai Version](https://img.shields.io/badge/google--genai-0.8-blue)](https://googleapis.github.io/python-genai/)
+[![Streamlit Version](https://img.shields.io/badge/sreamlit-1.43-blue)](https://streamlit.io/)
 [![Python Version](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 EduChat is a Streamlit-based educational chatbot that leverages Google's LearnLM 1.5 Pro Experimental large language model for interactive tutoring. The chatbot is designed to provide guided learning experiences while avoiding direct answers to homework questions.
 
-## Source code
+## Usage
 
-The source code is entirely in the [educhat.py](educhat.py) file. None of the other files are necessary to run it outside of Replit.
+1. When you first run the app, select your preferred model
+2. Enter the subject you want to learn about
+3. Start asking questions and interacting with the tutor
+4. The tutor will provide hints and guidance rather than direct answers
+5. Look for special emoji indicators:
+   - ⚠️ Warns when attempting to get forbidden answers
+   - ⭐ Appears when correctly solving difficult problems
 
 ## Features
 
@@ -25,45 +31,40 @@ The source code is entirely in the [educhat.py](educhat.py) file. None of the ot
   - Gemini 2.0 Flash Lite
   - Gemini 2.0 Pro Experimental 02-05
 
-## Getting Started
-
-1. Visit the [Replit app](https://replit.com/@jsalsman/EduChat) and click "Remix this app", or fork this GitHub repo to create your own instance
-2. Add your own Google API key in Replit's Secrets tool (environment variables) with the key name `FREE_GEMINI_API_KEY`
-3. Click the "Run" button to start the Streamlit app
-
-## Requirements
-
-The project uses Poetry for dependency management. Key dependencies include:
-- Python 3.10
-- Streamlit
-- Google GenerativeAI
-
-## Usage
-
-1. When you first run the app, select your preferred model
-2. Enter the subject you want to learn about
-3. Start asking questions and interacting with the tutor
-4. The tutor will provide hints and guidance rather than direct answers
-5. Look for special emoji indicators:
-   - ⚠️ Warns when attempting to get forbidden answers
-   - ⭐ Appears when correctly solving difficult problems
-
 ## Privacy
 
 The application does not track or store any user data or conversations.
 
-## License
+## Source code
 
-MIT License - See the LICENSE file for details
+The Streamlit/Python source code is entirely in the [educhat.py](educhat.py) file. No other files are usually necessary to run it.
+
+## Deploying Your Own Fork
+
+1. Fork this GitHub repo and deploy your fork on the [Streamlit Community Cloud](https://share.streamlit.io/).
+2. For "Main file path" use `educhat.py`.
+3. Under "Advanced settings" ensure that Python 3.10 is selected, and under Secrets, add your [free API key](https://aistudio.google.com/apikey) in the format `GEMINI_API_KEY="your API key"`.
+4. Click the "Deploy" button to launch your customized Streamlit app.
+
+## Requirements
+
+The project uses Poetry for dependency management, but includes a `requirements.txt` file for `pip`. Key dependencies include:
+- Python 3.10
+- Streamlit 1.43
+- Google GenerativeAI 0.8
 
 ## Credits
 
 - Implementation by Jim Salsman, March 2025
 - Inspired by [Tonga et al. (2024)](https://arxiv.org/abs/2411.03495)
 
+## License
+
+MIT License - See the LICENSE file for details
+
 ## Contributing
 
-Feel free to fork this repo and customize it.
+Feel free to fork this repo and customize it, and deploy entirely for free on the [Streamlit Community Cloud](https://share.streamlit.io/).
 
 ## Program Logic
 

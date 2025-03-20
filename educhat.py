@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 # MIT License -- see the LICENSE file
-VERSION="1.3.0"
+VERSION="1.3.1"
 # For stable releases see: https://github.com/jsalsman/EduChat
 
 # System prompt suffix:
@@ -34,26 +34,6 @@ st.html("""<style>
   .block-container { padding-top: 3.2rem !important; }
 </style>""")
 
-@st.dialog("EduChat is moving from Replit to Streamlit Community Cloud")
-def dialog():
-    st.write("Due the unexpected viral popularity of this web app, my Replit "
-             "hosting bill has grown substantially since its announcment. "
-             "So please  <a href='https://edu-chat.streamlit.app/' "
-             "target='_self'>use it on the Streamlit Community Cloud</a>  "
-             "instead, and [consider donating](https://paypal.me/jsalsman) "
-             "a few dolars to support the app and help cover my surprise "
-             "Replit charges.", unsafe_allow_html=True)
-    st.write("This change makes it even easier to experiment with changes, "
-             "by forking [the GitHub Repo]"
-             "(https://github.com/jsalsman/EduChat) and [deploying your "
-             "fork](https://share.streamlit.io/) entirely for free. Thank "
-             "you for your understanding and consideration.")
-    st.session_state.dialoged = True
-    if st.button("Continue on Replit"):
-        st.rerun()
-if "dialoged" not in st.session_state and ".replit." in str(environ):
-    dialog()
-
 st.subheader("EduChat: A Constrained LearnLM Tutor")
 st.markdown("""This chatbot uses Google's free [LearnLM 1.5 Pro
 Experimental](https://ai.google.dev/gemini-api/docs/learnlm) large language
@@ -66,12 +46,34 @@ include a decision about whether the learner appears to be attempting to
 obtain direct answers, guiding the model to avoid giving them away instead
 of coaching with hints.
 
-The [source code](https://replit.com/@jsalsman/EduChat#educhat.py) includes
-the system instruction prompt and can easily be "remixed" in Replit to
-experiment with changes. See the [Replit](https://docs.replit.com/) and
-[Streamlit](https://docs.streamlit.io/) documentation. See also [Tonga
-*et al.* (2024)](https://arxiv.org/abs/2411.03495) for the inspiration.
-[Please consider donating](https://paypal.me/jsalsman) to support.""")
+The [source code](https://github.com/jsalsman/EduChat/blob/main/educhat.py)
+includes the system instruction prompt. [The GitHub repo]
+(https://github.com/jsalsman/EduChat) can be forked and deployed entirely
+for free on the [Streamlit Community Cloud](https://share.streamlit.io/)
+to experiment with changes. See the [Streamlit documentation]
+(https://docs.streamlit.io/). See also [Tonga *et al.* (2024)]
+(https://arxiv.org/abs/2411.03495) for the inspiration. [Please consider
+donating](https://paypal.me/jsalsman) to support this work.""")
+
+@st.dialog("EduChat is moving from Replit to the Streamlit Community Cloud")
+def dialog():
+    st.write("Due the unexpected viral popularity of this web app, my Replit "
+             "hosting bill has grown substantially since its announcment. "
+             "So please  <a href='https://edu-chat.streamlit.app/' "
+             "target='_self'>use it on the Streamlit Community Cloud</a>  "
+             "instead, and [consider donating](https://paypal.me/jsalsman) "
+             "a few dolars to support the app and help cover my surprise "
+             "Replit charges.", unsafe_allow_html=True)
+    st.write("This move makes it even easier to experiment with changes, "
+             "by forking [the GitHub Repo]"
+             "(https://github.com/jsalsman/EduChat) and [deploying your "
+             "fork](https://share.streamlit.io/) entirely for free. Thank "
+             "you for your understanding and consideration.")
+    st.session_state.dialoged = True
+    if st.button("Continue on Replit (please donate first :)"):
+        st.rerun()
+if "dialoged" not in st.session_state and ".replit." in str(environ):
+    dialog()
 
 # LearnLM 1.5 Pro Experimental is completely free as of March 2025;
 # get your own free API key at https://aistudio.google.com/apikey
