@@ -1,11 +1,12 @@
 
 # EduChat: A Constrained LearnLM Tutor
 
-[![Run on Streamlit Community Cloud](https://img.shields.io/badge/Run_on_Streamlit_Community_Cloud-darkgreen)](https://edu-chat.streamlit.app)
+[![Run on Streamlit Community Cloud](https://img.shields.io/badge/Run_on-Streamlit_Community_Cloud-darkgreen?logo=streamlit)](https://edu-chat.streamlit.app)
 [![Google Genai Version](https://img.shields.io/badge/google--genai-0.8-blue)](https://googleapis.github.io/python-genai/)
 [![Streamlit Version](https://img.shields.io/badge/sreamlit-1.43-blue)](https://streamlit.io/)
-[![Python Version](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python Version](https://img.shields.io/badge/python-3.10-blue)](https://www.python.org/downloads/)
+[![MIT License](https://img.shields.io/badge/License-MIT-yellow)](https://opensource.org/licenses/MIT)
+[![Donate](https://img.shields.io/badge/Donate-gold?logo=paypal)](https://paypal.me/jsalsman)
 
 EduChat is a Streamlit-based educational chatbot that leverages Google's LearnLM 1.5 Pro Experimental large language model for interactive tutoring. The chatbot is designed to provide guided learning experiences while avoiding direct answers to homework questions.
 
@@ -60,7 +61,7 @@ The project uses Poetry for dependency management, but includes a `requirements.
 
 ## License
 
-MIT License - See the LICENSE file for details
+MIT License - See the [LICENSE](LICENSE) file for details.
 
 ## Contributing
 
@@ -112,6 +113,6 @@ Feel free to fork this repo and customize it, and deploy entirely for free on th
    - Manages token limits (Lines 202-212)
    - Processes API requests with retry logic (Lines 214-224)
    - Generates and streams AI responses (Lines 225-236)
-   - Includes error handling (Lines 221-223, 229-231, 237-238)
+   - Includes error handling (Lines 221-223, 229-231, 238-245)
 
 The program uses Streamlit's session state to maintain conversation context and Google's GenerativeAI API for response generation, while enforcing educational constraints through the system prompt defined at the beginning of the file.
