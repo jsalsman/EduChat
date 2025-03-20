@@ -1,6 +1,7 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 # MIT License -- see the LICENSE file
-# v1.1.0. For stable releases see: https://github.com/jsalsman/EduChat
+VERSION="1.1.1"
+# For stable releases see: https://github.com/jsalsman/EduChat
 
 # System prompt suffix:
 INSTRUCTIONS = """
@@ -90,8 +91,8 @@ else:
 if not st.session_state.subject_set:  # Initialize subject of instruction
     subject = st.text_input("What would you like to learn about?")
 
-    st.markdown("**Privacy policy:** absolutely nothing is tracked, "
-                "as should be clear from the source code.")
+    st.markdown("**Privacy policy:** absolutely nothing is tracked, as "
+                f"should be clear from the source code. Verson {VERSION}.")
 
     if subject:
         st.session_state.subject = subject
