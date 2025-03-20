@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 # MIT License -- see the LICENSE file
-VERSION="1.3.3"
+VERSION="1.3.4"
 # For stable releases see: https://github.com/jsalsman/EduChat
 
 # System prompt suffix:
@@ -61,9 +61,9 @@ def dialog():
              "hosting bill has grown substantially since its announcment. "
              "So please  <a href='https://edu-chat.streamlit.app/' "
              "target='_self'>use it on the Streamlit Community Cloud</a>  "
-             "instead, and [consider donating](https://paypal.me/jsalsman) "
-             "a few dolars to support the work and help cover my surprise "
-             "Replit charges.", unsafe_allow_html=True)
+             "instead, and consider [donating a few "
+             "dolars](https://paypal.me/jsalsman) to support this work and "
+             "help cover my surprise Replit charges.", unsafe_allow_html=True)
     st.write("This move makes it even easier to experiment with changes, "
              "by forking [the GitHub Repo]"
              "(https://github.com/jsalsman/EduChat) and [deploying your "
@@ -126,7 +126,7 @@ else:
 
 if not st.session_state.subject_set:  # Initialize subject of instruction
     subject = st.text_input("What would you like to learn about?",
-                           placeholder="General subject or specific topic")
+                            placeholder="General subject or specific topic")
 
     st.markdown("**Privacy policy:** absolutely nothing is tracked, as "
                 f"should be clear from the source code. Verson {VERSION}.")
@@ -236,7 +236,7 @@ if st.session_state.model_set:  # Main interaction loop
             })
         else:
             st.error("Failed to reach the LLM after four retries. Wait a few "
-                     "minutes and repeat your reply. Or, to avoid these rate "
+                     "minutes and repeat your reply, or, to avoid these rate "
                      "limiting problems, [fork the GitHub repo]"
                      "(https://github.com/jsalsman/EduChat), create [your "
                      "own Gemini API key](https://aistudio.google.com/apikey), "
