@@ -68,38 +68,36 @@ Feel free to fork this repo and customize it, and deploy entirely for free on th
 
 ## Program Logic
 
-The program follows this logical sequence:
-
-1. **Initial Setup** (Lines 1-40):
+1. **Initial Setup** (Lines 1-50):
    - Defines the system instructions for the tutor
    - Imports required libraries
    - Configures Google's GenerativeAI with API key
    - Sets up Streamlit interface styling
 
-2. **State Management** (Lines 41-47):
+2. **State Management** (Lines 51-60):
    - Initializes session state variables for:
      - Subject of study
      - New session flag
      - Message history
      - Model selection state
 
-3. **Model Selection** (Lines 48-58):
-   - Provides a segmented control to select between different LLM models
+3. **Model Selection** (Lines 61-72):
+   - Provides options to select different LLM models
    - Displays current model selection
 
-4. **Subject Initialization** (Lines 59-69):
+4. **Subject Initialization** (Lines 73-83):
    - Prompts user for learning subject
    - Includes privacy policy
    - Triggers rerun when subject is set
 
-5. **Model Initialization** (Lines 70-88):
+5. **Model Initialization** (Lines 84-102):
    - Creates system prompt combining subject and instructions
    - Configures model with:
      - Zero temperature for consistency
      - Code execution capability
    - Sets up initial teaching prompt
 
-6. **Main Interaction Loop** (Lines 89-184):
+6. **Main Interaction Loop** (Lines 103-210):
    - Displays message history
    - Handles file uploads
    - Manages token limits
@@ -108,12 +106,12 @@ The program follows this logical sequence:
    - Includes error handling and retry logic
    - Updates conversation history
 
-7. **Token Management** (Lines 128-137):
+7. **Token Management** (Lines 155-165):
    - Tracks token usage
    - Trims conversation history to prevent exceeding limits
    - Maintains approximate token counts
 
-8. **Error Handling** (Lines 150-184):
+8. **Error Handling** (Lines 180-210):
    - Implements exponential backoff for API retries
    - Provides user feedback for errors
    - Handles response streaming failures
