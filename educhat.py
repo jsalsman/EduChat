@@ -27,9 +27,7 @@ from google.generativeai.types import File as GenAIFile
 from os import environ  # API key access from secrets
 import streamlit as st  # Streamlit app framework
 from sys import stderr  # for logging errors
-from time import sleep
-
-from streamlit.runtime.state import session_state_proxy  # for rate limiting API retries
+from time import sleep  # for rate limiting API retries
 
 # Add custom CSS to remove top padding
 st.html("""<style>
