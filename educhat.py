@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 # MIT License -- see the LICENSE file
-VERSION="1.3.4"
+VERSION="1.3.5"
 # For stable releases see: https://github.com/jsalsman/EduChat
 
 # System prompt suffix:
@@ -115,11 +115,11 @@ if "subject" not in st.session_state:  # Initialize state
 if not st.session_state.model_set:  # Select model
     st.session_state.model_name = st.segmented_control(
         "Select any of these free models:", ["learnlm-1.5-pro-experimental",
-          "gemini-2.0-flash-lite", "gemini-2.0-pro-exp-02-05"],
+          "gemini-2.0-flash", "gemini-2.0-pro-exp-02-05"],
         default="learnlm-1.5-pro-experimental", format_func=lambda model:
             ("LearnLM 1.5 Pro Experimental" 
                              if model == "learnlm-1.5-pro-experimental" else
-            "Gemini 2.0 Flash Lite" if model == "gemini-2.0-flash-lite" else
+            "Gemini 2.0 Flash" if model == "gemini-2.0-flash" else
             "Gemini 2.0 Pro Experimental 02-05"))
 else:
     st.markdown(f"Using model: ```{st.session_state.model_name}```")
