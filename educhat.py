@@ -72,8 +72,19 @@ def dialog():
              "Thank you for your understanding and consideration.")
     st.session_state.dialoged = True
     if st.button("Don't show this again"):
+        # Set a cookie to remember this choice
+        st.session_state.hide_dialog_permanent = True
         st.rerun()
-if "dialoged" not in st.session_state: ###### and ".streamlit." in str(environ):
+
+# Check for a cookie or session state variable
+cookie_manager = st.cookies.get("hide_dialog")
+if cookie_manager is not None and cookie_manager == "true":
+    st.session_state.dialoged = True
+elif "hide_dialog_permanent" in st.session_state and st.session_state.hide_dialog_permanent:
+    # Set cookie to remember this preference
+    st.cookies.set("hide_dialog", "true", expires_at=None)  # No expiration
+    st.session_state.dialoged = True
+elif "dialoged" not in st.session_state: ###### and ".streamlit." in str(environ):
     dialog()
 
 # LearnLM 1.5 Pro Experimental is completely free as of March 2025;
