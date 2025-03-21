@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 # MIT License -- see the LICENSE file
-VERSION="1.3.4"
+VERSION="1.3.5"
 # For stable releases see: https://github.com/jsalsman/EduChat
 
 # System prompt suffix:
@@ -55,24 +55,25 @@ docs](https://docs.streamlit.io/). See also [Tonga *et al.*
 (2024)](https://arxiv.org/abs/2411.03495) for the inspiration. [Please
 consider donating](https://paypal.me/jsalsman) to support this work.""")
 
-@st.dialog("EduChat is moving from Replit to the Streamlit Community Cloud")
+@st.dialog("EduChat has moved to the Streamlit Community Cloud")
 def dialog():
-    st.write("Due the unexpected viral popularity of this web app, my Replit "
-             "hosting bill has grown substantially since its announcment. "
-             "So please  <a href='https://edu-chat.streamlit.app/' "
-             "target='_self'>use it on the Streamlit Community Cloud</a>  "
-             "instead, and consider [donating a few "
-             "dolars](https://paypal.me/jsalsman) to support this work and "
-             "help cover my surprise Replit charges.", unsafe_allow_html=True)
+    st.write("Due the unexpected viral popularity of this web app, my "
+             "Replit hosting bill blew up since its announcment. "
+             "So now its hostname is ```edu-chat.streamlit.app``` "
+             "because the Streamlit Community Cloud provides the "
+             "idential service at no cost.")
+    st.write("Please consider [donating a few "
+             "dolars](https://paypal.me/jsalsman) to support this work "
+             "and help cover my surprise Replit charges.")
     st.write("This move makes it even easier to experiment with changes, "
              "by forking [the GitHub Repo]"
              "(https://github.com/jsalsman/EduChat) and [deploying your "
-             "fork](https://share.streamlit.io/) entirely for free. Thank "
-             "you for your understanding and consideration.")
+             "fork](https://share.streamlit.io/) entirely for free. "
+             "Thank you for your understanding and consideration.")
     st.session_state.dialoged = True
-    if st.button("Continue on Replit (please donate first :)"):
+    if st.button("Don't show this again"):
         st.rerun()
-if "dialoged" not in st.session_state and ".replit." in str(environ):
+if "dialoged" not in st.session_state: ###### and ".streamlit." in str(environ):
     dialog()
 
 # LearnLM 1.5 Pro Experimental is completely free as of March 2025;
