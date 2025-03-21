@@ -4,7 +4,7 @@
 [![Run on Streamlit Community Cloud](https://img.shields.io/badge/Run_on-Streamlit_Community_Cloud-darkgreen?logo=streamlit)](https://edu-chat.streamlit.app)
 [![Google Genai Version](https://img.shields.io/badge/google--genai-0.8-blue)](https://googleapis.github.io/python-genai/)
 [![Streamlit Version](https://img.shields.io/badge/sreamlit-1.43-blue)](https://streamlit.io/)
-[![Python Version](https://img.shields.io/badge/python-3.10-blue)](https://www.python.org/downloads/)
+[![Python Version](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/downloads/)
 [![MIT License](https://img.shields.io/badge/License-MIT-yellow)](https://opensource.org/licenses/MIT)
 [![Donate](https://img.shields.io/badge/Donate-gold?logo=paypal)](https://paypal.me/jsalsman)
 

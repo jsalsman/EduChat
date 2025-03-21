@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 # MIT License -- see the LICENSE file
-VERSION="1.3.5"
+VERSION="1.3.6"
 # For stable releases see: https://github.com/jsalsman/EduChat
 
 # System prompt suffix:
@@ -26,19 +26,15 @@ import google.generativeai as genai  # pip install google-generativeai
 from google.generativeai.types import File as GenAIFile
 from os import environ  # API key access from secrets, and host name
 import streamlit as st  # Streamlit app framework
+from streamlit_cookies_manager_ext import EncryptedCookieManager
 from sys import stderr  # for logging errors
 from time import sleep  # for rate limiting API retries
 
-from streamlit_cookies_manager import EncryptedCookieManager
+# Using one cookie to permanently dismiss the modal dialog announcement
 cookies = EncryptedCookieManager(prefix="educhat/",
-    password="change this to make the hide_dialog cookie super secret")
+                                 password="not confidential")
 if not cookies.ready():
     st.stop()
-
-# Add CSS to reduce top padding
-st.html("""<style>
-  .block-container { padding-top: 3.2rem !important; }
-</style>""")
 
 st.subheader("EduChat: A Constrained LearnLM Tutor")
 st.markdown("""This chatbot uses Google's free [LearnLM 1.5 Pro
@@ -76,12 +72,11 @@ def dialog():
              "(https://github.com/jsalsman/EduChat) and [deploying your "
              "fork](https://share.streamlit.io/) entirely for free. "
              "Thank you for your understanding and consideration.")
-    st.session_state.dialoged = True
+    st.session_state.dialog = 'seen'
     if st.button("Don't show this again."):
-        cookies['dialoged'] = 'true'
+        cookies['dialog'] = 'seen'
         st.rerun()
-if "dialoged" not in st.session_state and cookies.get('dialoged', '') != 'true':
-    ###### and ".streamlit." in str(environ):
+if ("dialog" not in st.session_state and cookies.get('dialog', '') != 'seen'):
     dialog()
 
 # LearnLM 1.5 Pro Experimental is completely free as of March 2025;
@@ -124,11 +119,11 @@ if "subject" not in st.session_state:  # Initialize state
 if not st.session_state.model_set:  # Select model
     st.session_state.model_name = st.segmented_control(
         "Select any of these free models:", ["learnlm-1.5-pro-experimental",
-          "gemini-2.0-flash-lite", "gemini-2.0-pro-exp-02-05"],
+          "gemini-2.0-flash", "gemini-2.0-pro-exp-02-05"],
         default="learnlm-1.5-pro-experimental", format_func=lambda model:
             ("LearnLM 1.5 Pro Experimental" 
                              if model == "learnlm-1.5-pro-experimental" else
-            "Gemini 2.0 Flash Lite" if model == "gemini-2.0-flash-lite" else
+            "Gemini 2.0 Flash" if model == "gemini-2.0-flash" else
             "Gemini 2.0 Pro Experimental 02-05"))
 else:
     st.markdown(f"Using model: ```{st.session_state.model_name}```")
@@ -137,9 +132,8 @@ if not st.session_state.subject_set:  # Initialize subject of instruction
     subject = st.text_input("What would you like to learn about?",
                             placeholder="General subject or specific topic")
 
-    st.markdown("**Privacy policy:** No identifying or chat information "
-                "is recorded; minimal debugging info is logged. "
-                f"Verson {VERSION}.")
+    st.markdown("**Privacy policy:** No identifying information or any chat "
+                f"messages are ever recorded. Verson {VERSION}.")
 
     if subject:
         st.session_state.subject = subject
@@ -197,7 +191,8 @@ if st.session_state.model_set:  # Main interaction loop
                                  f"type {file.mime_type} with {token_count}"
                                  f" tokens ({file.size_bytes} bytes)")
                     st.session_state.messages.append({"role": "user",
-                                        "parts": [file], "tokens": token_count,
+                                        "parts": [file],
+                                        "tokens": token_count,
                                         "size_bytes": file.size_bytes})
 
         # Add message with token count for text input
