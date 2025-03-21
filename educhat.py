@@ -28,6 +28,8 @@ from os import environ  # API key access from secrets, and host name
 import streamlit as st  # Streamlit app framework
 from sys import stderr  # for logging errors
 from time import sleep  # for rate limiting API retries
+from extra_streamlit_components import CookieManager  # hide moved dialog...
+from datetime import datetime, timedelta  # ...for 10 years
 
 # Add CSS to reduce top padding
 st.html("""<style>
@@ -55,6 +57,7 @@ docs](https://docs.streamlit.io/). See also [Tonga *et al.*
 (2024)](https://arxiv.org/abs/2411.03495) for the inspiration. [Please
 consider donating](https://paypal.me/jsalsman) to support this work.""")
 
+cookies = CookieManager()  # Intentionally omitted from Privacy Policy
 @st.dialog("EduChat has moved to the Streamlit Community Cloud")
 def dialog():
     st.write("Due the unexpected viral popularity of this web app, my "
@@ -71,30 +74,18 @@ def dialog():
              "fork](https://share.streamlit.io/) entirely for free. "
              "Thank you for your understanding and consideration.")
     st.session_state.dialoged = True
-    if st.button("Don't show this again"):
-        # Set a cookie to remember this choice
-        st.session_state.hide_dialog_permanent = True
+    if st.button("Don't show this again."):
+        cookies.set("hide_dialog_test3", "true",
+                    expires_at=datetime.now() + timedelta(days=5000))
+        print("cookie set")
         st.rerun()
-
-import extra_streamlit_components as stx
-
-# Initialize cookie manager
-@st.cache_resource
-def get_cookie_manager():
-    return stx.CookieManager()
-
-cookie_manager = get_cookie_manager()
-
-# Check for a cookie or session state variable
-hide_dialog_cookie = cookie_manager.get(cookie="hide_dialog")
-if hide_dialog_cookie == "true":
+if cookies.get(cookie="hide_dialog_test3") == "true":
+    print("cookie found")
     st.session_state.dialoged = True
-elif "hide_dialog_permanent" in st.session_state and st.session_state.hide_dialog_permanent:
-    # Set cookie to remember this preference
-    cookie_manager.set("hide_dialog", "true")  # Expires in a day by default
-    st.session_state.dialoged = True
-elif "dialoged" not in st.session_state: ###### and ".streamlit." in str(environ):
+if "dialoged" not in st.session_state: ###### and ".streamlit." in str(environ):
     dialog()
+else:
+    print("already dialoged")
 
 # LearnLM 1.5 Pro Experimental is completely free as of March 2025;
 # get your own free API key at https://aistudio.google.com/apikey
@@ -149,8 +140,9 @@ if not st.session_state.subject_set:  # Initialize subject of instruction
     subject = st.text_input("What would you like to learn about?",
                             placeholder="General subject or specific topic")
 
-    st.markdown("**Privacy policy:** absolutely nothing is tracked, as "
-                f"should be clear from the source code. Verson {VERSION}.")
+    st.markdown("**Privacy policy:** No identifying or chat information "
+                "is recorded; minimal debugging info is logged.\n\n"
+                f"Verson {VERSION}.")
 
     if subject:
         st.session_state.subject = subject

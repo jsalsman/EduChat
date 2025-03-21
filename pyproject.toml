@@ -8,6 +8,7 @@ authors = ["Jim Salsman <jsalsman@gmail.com>"]
 python = ">=3.10.0,<3.11"
 streamlit = "^1.43.2"
 google-generativeai = "^0.8.4"
+extra-streamlit-components = "0.1.71"
 
 [tool.pyright]
 # https://github.com/microsoft/pyright/blob/main/docs/configuration.md
