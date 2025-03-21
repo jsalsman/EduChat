@@ -29,7 +29,7 @@ EduChat is a Streamlit-based educational chatbot that leverages Google's LearnLM
 - Instructional hints instead of direct answers
 - Multiple model options:
   - LearnLM 1.5 Pro Experimental
-  - Gemini 2.0 Flash Lite
+  - Gemini 2.0 Flash
   - Gemini 2.0 Pro Experimental 02-05
 
 ## Privacy
