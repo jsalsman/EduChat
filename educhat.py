@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 # MIT License -- see the LICENSE file
-VERSION="1.3.6"
+VERSION="1.3.8"
 # For stable releases see: https://github.com/jsalsman/EduChat
 
 # System prompt suffix:
@@ -55,7 +55,11 @@ for free on the [Streamlit Community Cloud](https://share.streamlit.io/)
 to experiment with changes; see the [Streamlit
 docs](https://docs.streamlit.io/). See also [Tonga *et al.*
 (2024)](https://arxiv.org/abs/2411.03495) for the inspiration. [Please
-consider donating](https://paypal.me/jsalsman) to support this work.""")
+consider donating](https://paypal.me/jsalsman) to support this work.
+
+**NOTE:** There is a new Google genai API bug this Friday March 21 evening
+which causes the first response from the model to stream but then disappear.
+You can proceed by typing a question mark and pressing Enter.""")
 
 @st.dialog("EduChat has moved to the Streamlit Community Cloud")
 def dialog():
@@ -234,6 +238,7 @@ if st.session_state.model_set:  # Main interaction loop
                 except ValueError as e:
                     print(f"A response chunk caused an error: {e}",
                           file=stderr)
+            print(response.text)
             st.session_state.messages.append({
                 "role": "model", 
                 "parts": [response.text],
