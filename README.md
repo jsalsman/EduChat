@@ -2,7 +2,7 @@
 # EduChat: A Constrained LearnLM Tutor
 
 [![Run on Streamlit Community Cloud](https://img.shields.io/badge/Run_on-Streamlit_Community_Cloud-darkgreen?logo=streamlit)](https://edu-chat.streamlit.app)
-[![Google Genai Version](https://img.shields.io/badge/google--genai-0.8.4-blue)](https://googleapis.github.io/python-genai/)
+[![Google Genai Version](https://img.shields.io/badge/google--genai-0.8.3-blue)](https://googleapis.github.io/python-genai/)
 [![Streamlit Version](https://img.shields.io/badge/sreamlit-1.43.2-blue)](https://streamlit.io/)
 [![Python Version](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/downloads/)
 [![MIT License](https://img.shields.io/badge/License-MIT-green)](https://opensource.org/licenses/MIT)
@@ -52,7 +52,7 @@ The Streamlit/Python source code is entirely in the [educhat.py](educhat.py) fil
 The project uses Poetry for dependency management, but includes a `requirements.txt` file for `pip`. Key dependencies include:
 - Python 3.12
 - Streamlit 1.43.2
-- Google GenerativeAI 0.8.4
+- Google GenerativeAI 0.8.3
 
 ## Credits
 

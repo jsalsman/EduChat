@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 # MIT License -- see the LICENSE file
-VERSION="1.3.9"
+VERSION="1.4.0"
 # For stable releases see: https://github.com/jsalsman/EduChat
 
 # System prompt suffix:
