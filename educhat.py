@@ -55,7 +55,11 @@ for free on the [Streamlit Community Cloud](https://share.streamlit.io/)
 to experiment with changes; see the [Streamlit
 docs](https://docs.streamlit.io/). See also [Tonga *et al.*
 (2024)](https://arxiv.org/abs/2411.03495) for the inspiration. [Please
-consider donating](https://paypal.me/jsalsman) to support this work.""")
+consider donating](https://paypal.me/jsalsman) to support this work.
+
+**NOTE:** There is a new Google genai API bug Friday March 21 which sometimes
+causes the first response from the model to stream but then disappear.
+You can proceed normally by typing a question mark and pressing Enter.""")
 
 @st.dialog("EduChat has moved to the Streamlit Community Cloud")
 def dialog():
