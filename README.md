@@ -52,7 +52,7 @@ The Streamlit/Python source code is entirely in the [educhat.py](educhat.py) fil
 The project uses Poetry for dependency management, but includes a `requirements.txt` file for `pip`. Key dependencies include:
 - Python 3.12
 - Streamlit 1.43.2
-- Google GenerativeAI 0.8.3
+- Google GenerativeAI 0.8.4
 
 ## Credits
 
