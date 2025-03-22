@@ -6,9 +6,9 @@ authors = ["Jim Salsman <jsalsman@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = ">=3.12.0,<3.13"
-google-generativeai = "^0.8.4"
 streamlit = "^1.43.2"
 streamlit-cookies-manager-ext = "^0.1.0"
+google-generativeai = "0.8.3"
 
 [tool.pyright]
 # https://github.com/microsoft/pyright/blob/main/docs/configuration.md
