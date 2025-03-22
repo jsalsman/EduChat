@@ -2,10 +2,10 @@
 # EduChat: A Constrained LearnLM Tutor
 
 [![Run on Streamlit Community Cloud](https://img.shields.io/badge/Run_on-Streamlit_Community_Cloud-darkgreen?logo=streamlit)](https://edu-chat.streamlit.app)
-[![Google Genai Version](https://img.shields.io/badge/google--genai-0.8-blue)](https://googleapis.github.io/python-genai/)
-[![Streamlit Version](https://img.shields.io/badge/sreamlit-1.43-blue)](https://streamlit.io/)
+[![Google Genai Version](https://img.shields.io/badge/google--genai-0.8.4-blue)](https://googleapis.github.io/python-genai/)
+[![Streamlit Version](https://img.shields.io/badge/sreamlit-1.43.2-blue)](https://streamlit.io/)
 [![Python Version](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/downloads/)
-[![MIT License](https://img.shields.io/badge/License-MIT-yellow)](https://opensource.org/licenses/MIT)
+[![MIT License](https://img.shields.io/badge/License-MIT-green)](https://opensource.org/licenses/MIT)
 [![Donate](https://img.shields.io/badge/Donate-gold?logo=paypal)](https://paypal.me/jsalsman)
 
 EduChat is a Streamlit-based educational chatbot that leverages Google's LearnLM 1.5 Pro Experimental large language model for interactive tutoring. The chatbot is designed to provide guided learning experiences while avoiding direct answers to homework questions.
@@ -43,16 +43,16 @@ The Streamlit/Python source code is entirely in the [educhat.py](educhat.py) fil
 ## Deploying Your Own Fork
 
 1. Fork this GitHub repo and deploy your fork on the [Streamlit Community Cloud](https://share.streamlit.io/).
-2. For "Main file path" use `educhat.py`.
-3. Under "Advanced settings" ensure that Python 3.10 is selected, and under Secrets, add your [free API key](https://aistudio.google.com/apikey) in the format `GEMINI_API_KEY="your API key"`.
-4. Click the "Deploy" button to launch your customized Streamlit app.
+2. For the "Main file path" use `educhat.py`.
+3. In "Advanced settings", under Secrets, add your [free API key](https://aistudio.google.com/apikey) in the format `GEMINI_API_KEY="your API key"`.
+4. Click the "Deploy" button to launch your Streamlit app.
 
 ## Requirements
 
 The project uses Poetry for dependency management, but includes a `requirements.txt` file for `pip`. Key dependencies include:
-- Python 3.10
-- Streamlit 1.43
-- Google GenerativeAI 0.8
+- Python 3.12
+- Streamlit 1.43.2
+- Google GenerativeAI 0.8.4
 
 ## Credits
 
