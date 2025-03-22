@@ -1,9 +1,7 @@
-.devcontainer/
-.pythonlibs/
-.upm/
 poetry.lock
 pyproject.toml
 .replit
+generated-icon.png
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

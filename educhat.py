@@ -228,7 +228,7 @@ if st.session_state.model_set:  # Main interaction loop
                 break
             except Exception as e:
                 print(f"Model API error; retrying: {e}", file=stderr)
-                st.error(f"Error occurred: {e}. Retrying in {delay} seconds...")
+                st.error(f"Error: {e}. Retrying in {delay} seconds...")
                 sleep(delay)
 
         if response:
@@ -240,7 +240,7 @@ if st.session_state.model_set:  # Main interaction loop
                           file=stderr)
             st.session_state.messages.append({
                 "role": "model", 
-                "parts": [response.text],
+                "parts": [str(response.text)],
                 "tokens": response.usage_metadata.candidates_token_count
             })
         else:
