@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 # MIT License -- see the LICENSE file
-VERSION="1.3.8"
+VERSION="1.3.9"
 # For stable releases see: https://github.com/jsalsman/EduChat
 
 # System prompt suffix:
@@ -64,7 +64,7 @@ You can proceed by typing a question mark and pressing Enter.""")
 @st.dialog("EduChat has moved to the Streamlit Community Cloud")
 def dialog():
     st.write("Due the unexpected viral popularity of this web app, my "
-             "Replit hosting bill blew up since its announcment. "
+             "Replit hosting bill blew up since its announcement. "
              "So now its hostname is ```edu-chat.streamlit.app``` "
              "because the Streamlit Community Cloud provides an "
              "equivalent service at no cost.")
@@ -238,7 +238,6 @@ if st.session_state.model_set:  # Main interaction loop
                 except ValueError as e:
                     print(f"A response chunk caused an error: {e}",
                           file=stderr)
-            print(response.text)
             st.session_state.messages.append({
                 "role": "model", 
                 "parts": [response.text],
