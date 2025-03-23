@@ -232,23 +232,15 @@ if st.session_state.model_set:  # Main interaction loop
                 sleep(delay)
 
         if response:
-            full_response = ""
             with st.chat_message("assistant"):
                 try:
-                    # Collect response chunks while streaming
-                    for chunk in response:
-                        if chunk.text:
-                            full_response += chunk.text
-                            st.write(full_response)
-                            st.empty()  # Force UI update
+                    st.write_stream((chunk.text for chunk in response))
                 except ValueError as e:
                     print(f"A response chunk caused an error: {e}",
                           file=stderr)
-            
-            # Store the collected full response text instead of response.text
             st.session_state.messages.append({
                 "role": "model", 
-                "parts": [full_response],
+                "parts": [str(response.text)],
                 "tokens": response.usage_metadata.candidates_token_count
             })
         else:
