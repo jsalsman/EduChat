@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 # MIT License -- see the LICENSE file
-VERSION="1.4.1"
+VERSION="1.4.1"  ### attempted bug fix only partially helps; see "DEBUG" below
 # For stable releases see: https://github.com/jsalsman/EduChat
 
 # System prompt suffix:
@@ -234,7 +234,7 @@ if st.session_state.model_set:  # Main interaction loop
             def generate_chunks(r):
                 for chunk in r:
                     try:
-                        print("chunk len:", len(ct := chunk.text))  # VITAL: this fixes a bug, somehow. LOL
+                        print("chunk len:", len(ct := chunk.text))  ### DEBUG
                         yield ct
                     except Exception as e:
                         print(f"Response chunk errored: {e}", file=stderr)

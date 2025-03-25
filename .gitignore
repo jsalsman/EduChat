@@ -2,6 +2,7 @@ poetry.lock
 pyproject.toml
 .replit
 generated-icon.png
+attached_assets/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
