@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
 # MIT License -- see the LICENSE file
-VERSION="1.5.0" ### attempted bug fix not yet tested on SCC; see "DEBUG" below
+VERSION="1.4.1"  ### attempted bug fix only partially helps; see "DEBUG" below
 # For stable releases see: https://github.com/jsalsman/EduChat
 
 # System prompt suffix:
@@ -55,7 +55,11 @@ for free on the [Streamlit Community Cloud](https://share.streamlit.io/)
 to experiment with changes; see the [Streamlit
 docs](https://docs.streamlit.io/). See also [Tonga *et al.*
 (2024)](https://arxiv.org/abs/2411.03495) for the inspiration. [Please
-consider donating](https://paypal.me/jsalsman) to support this work.""")
+consider donating](https://paypal.me/jsalsman) to support this work.
+
+**NOTE:** There is a new Google genai API bug Friday March 21 which sometimes
+causes the first response from the model to stream but then disappear.
+You can proceed normally by typing a question mark and pressing Enter.""")
 
 @st.dialog("EduChat has moved to the Streamlit Community Cloud")
 def dialog():
@@ -227,24 +231,20 @@ if st.session_state.model_set:  # Main interaction loop
                 st.error(f"Error: {e}. Retrying in {delay} seconds...")
                 sleep(delay)
         if response:
-            response_list = [""]
-            st.session_state.messages.append({
-                "role": "model", 
-                "parts": response_list,
-            })
             def generate_chunks(r):
                 for chunk in r:
                     try:
-                        response_list[0] += (ct := chunk.text)  ### DEBUG
+                        print("chunk len:", len(ct := chunk.text))  ### DEBUG
                         yield ct
                     except Exception as e:
                         print(f"Response chunk errored: {e}", file=stderr)
             with st.chat_message("assistant"):
                 st.write_stream(generate_chunks(response))
-            response_list[0] = response.text
-            st.session_state.messages[-1]["tokens"
-                    ] = response.usage_metadata.candidates_token_count
-            st.rerun()
+            st.session_state.messages.append({
+                "role": "model", 
+                "parts": [response.text],
+                "tokens": response.usage_metadata.candidates_token_count
+            })
         else:
             st.error("Failed to reach the LLM after four retries. Wait a few "
                      "minutes and repeat your reply, or, to avoid these rate "
