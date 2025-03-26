@@ -245,6 +245,7 @@ if st.session_state.model_set:  # Main interaction loop
                 "parts": [response.text],
                 "tokens": response.usage_metadata.candidates_token_count
             })
+            st.rerun()
         else:
             st.error("Failed to reach the LLM after four retries. Wait a few "
                      "minutes and repeat your reply, or, to avoid these rate "
