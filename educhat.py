@@ -37,8 +37,8 @@ if not cookies.ready():
     st.stop()
 
 st.subheader("EduChat: A Constrained LearnLM Tutor")
-st.markdown("""This chatbot uses Google's free [LearnLM 1.5 Pro
-Experimental](https://ai.google.dev/gemini-api/docs/learnlm) large language
+st.markdown("""This chatbot uses Google's free
+[LearnLM](https://ai.google.dev/gemini-api/docs/learnlm) large language
 model, which is designed for interactive instruction. It has a lot of great
 features for tutoring, but unfortunately as-is it will eagerly solve homework
 questions directly instead of coaching by offering hints instead. This
@@ -57,9 +57,9 @@ docs](https://docs.streamlit.io/). See also [Tonga *et al.*
 (2024)](https://arxiv.org/abs/2411.03495) for the inspiration. [Please
 consider donating](https://paypal.me/jsalsman) to support this work.
 
-**NOTE:** There is a new Google genai API bug Friday March 21 which sometimes
-causes the first response from the model to stream but then disappear.
-You can proceed normally by typing a question mark and pressing Enter.""")
+**NOTE:** There is a transient Google genai API bug which sometimes
+supresses the first response from the model. You can proceed normally
+by typing a question mark and pressing Enter.""")
 
 @st.dialog("EduChat has moved to the Streamlit Community Cloud")
 def dialog():
