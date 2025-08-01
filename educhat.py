@@ -23,7 +23,7 @@ their own lines.)
 complicated question, include the star emoji ⭐ in your response."""
 
 import google.genai as genai  # pip install google-genai
-from google.genai.types import Part, Content, File as GenAIFile
+from google.genai.types import GenerateContentConfig, Part, Content, File as GenAIFile
 from os import environ  # API key access from secrets, and host name
 import streamlit as st  # Streamlit app framework
 from streamlit_cookies_manager_ext import EncryptedCookieManager
@@ -158,7 +158,7 @@ if st.session_state.subject_set and not st.session_state.model_set:
         f"{st.session_state.subject}.\n{INSTRUCTIONS}\n"  # append suffix above
 
     # Create config for the chat
-    config = types.GenerateContentConfig(
+    config = GenerateContentConfig(
         system_instruction=system_prompt,
         temperature=0,  # for reproducibility
         tools=[{"code_execution": {}}]  # Enable code execution
