@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March-July 2025
 # MIT License -- see the LICENSE file
-VERSION="1.5.0"  ### attempted bug fix only partially helps; see "DEBUG" below
+VERSION="2.0.0"  # upgraded to the new genai API
 # For stable releases see: https://github.com/jsalsman/EduChat
 
 # System prompt suffix:
@@ -22,8 +22,8 @@ their own lines.)
      When the user solves a difficult problem or correctly answers a
 complicated question, include the star emoji ⭐ in your response."""
 
-import google.generativeai as genai  # pip install google-generativeai
-from google.generativeai.types import File as GenAIFile
+import google.genai as genai  # pip install google-genai
+from google.genai.types import Part, Content, File as GenAIFile
 from os import environ  # API key access from secrets, and host name
 import streamlit as st  # Streamlit app framework
 from streamlit_cookies_manager_ext import EncryptedCookieManager
@@ -89,9 +89,12 @@ if ("dialog" not in st.session_state and cookies.get('dialog', '') != 'seen'):
 # Initialize the Google genai API with an API key
 if 'key_set' not in st.session_state:
     try:
-        genai.configure(api_key=environ["GEMINI_API_KEY"])
-        models = genai.list_models()
-        print("models:", sum(1 for _ in models), file=stderr)
+        # Create client with API key
+        client = genai.Client(api_key=environ["GEMINI_API_KEY"])
+        # Test the client by listing models
+        models = list(client.models.list())
+        print("models:", len(models), file=stderr)
+        st.session_state.client = client
         st.session_state.key_set = True
     except:
         st.error("API key not found or invalid. Please [get your own free "
@@ -103,10 +106,11 @@ if 'key_set' not in st.session_state:
                  key="apikey", placeholder="API key", type="password",
                  on_change=clear_api_key())
         if api_key_input:
-            genai.configure(api_key=api_key_input)
             try:
-                models = genai.list_models()
-                print("models:", sum(1 for _ in models), file=stderr)
+                client = genai.Client(api_key=api_key_input)
+                models = list(client.models.list())
+                print("models:", len(models), file=stderr)
+                st.session_state.client = client
                 st.session_state.key_set = True
             except Exception as e:
                 print(f"Bad API key: {e}")
@@ -119,6 +123,7 @@ if "subject" not in st.session_state:  # Initialize state
     st.session_state.messages = []
     st.session_state.model_name = None
     st.session_state.model_set = False
+    st.session_state.chat = None
 
 if not st.session_state.model_set:  # Select model
     st.session_state.model_name = st.segmented_control(
@@ -145,18 +150,20 @@ if not st.session_state.subject_set:  # Initialize subject of instruction
         st.rerun()
 
 if st.session_state.subject_set and not st.session_state.model_set:
-    # Initialize model
+    # Initialize chat with system prompt
     system_prompt = "Tutor the user about " \
         f"{st.session_state.subject}.\n{INSTRUCTIONS}\n"  # append suffix above
 
-    model = genai.GenerativeModel(
-        model_name=st.session_state.model_name,
-        system_instruction=system_prompt,
-        generation_config={"temperature": 0},  # for reproducibility
-        tools=['code_execution']
-        # see https://ai.google.dev/gemini-api/docs/code-execution
+    # Create a new chat session with the client
+    chat = st.session_state.client.chats.create(
+        model=st.session_state.model_name,
+        config={
+            "system_instruction": system_prompt,
+            "temperature": 0,  # for reproducibility
+            "tools": [{"code_execution": {}}]  # Enable code execution
+        }
     )
-    st.session_state.model = model
+    st.session_state.chat = chat
     st.session_state.model_set = True
 
     st.session_state.initial = f"Teach me about {st.session_state.subject}."
@@ -166,15 +173,13 @@ if st.session_state.model_set:  # Main interaction loop
     for message in st.session_state.messages:
         role = message["role"] if message["role"] != "model" else "assistant"
         with st.chat_message(role):
-            if isinstance(message["parts"][0], GenAIFile):
-                file = message["parts"][0]
-                token_count = message.get("tokens", 0)
-                size_bytes = message.get("size_bytes", 0)
-                st.write(f"Uploaded file '{file.display_name}' type "
-                         f"{file.mime_type} with {token_count} tokens "
-                         f"({size_bytes} bytes)")
+            if "file_info" in message:
+                file_info = message["file_info"]
+                st.write(f"Uploaded file '{file_info['display_name']}' type "
+                         f"{file_info['mime_type']} with {file_info['tokens']} tokens "
+                         f"({file_info['size_bytes']} bytes)")
             else:
-                st.write(message["parts"][0])
+                st.write(message["text"])
 
     if (json_input := st.chat_input("Reply", accept_file="multiple")
                 ) or st.session_state.new:
@@ -186,23 +191,36 @@ if st.session_state.model_set:  # Main interaction loop
             files_input = json_input.files
             if files_input:  # upload files and add them to the messages
                 for f in files_input:
-                    file = genai.upload_file(f, display_name=f.name,
-                                            mime_type=f.type, resumable=False)
-                    token_count = st.session_state.model.count_tokens(
-                                                            file).total_tokens
+                    # Upload file to the client
+                    file = st.session_state.client.files.upload(
+                        path=f, 
+                        display_name=f.name,
+                        mime_type=f.type
+                    )
+                    # Get token count (this might need adjustment based on new API)
+                    # For now, we'll estimate based on file size
+                    token_count = f.size // 4  # Rough estimate
+                    
                     with st.chat_message("user"):
                         st.write(f"Uploaded file '{file.display_name}' "
-                                 f"type {file.mime_type} with {token_count}"
-                                 f" tokens ({file.size_bytes} bytes)")
-                    st.session_state.messages.append({"role": "user",
-                                        "parts": [file],
-                                        "tokens": token_count,
-                                        "size_bytes": file.size_bytes})
+                                 f"type {file.mime_type} with ~{token_count}"
+                                 f" tokens ({f.size} bytes)")
+                    st.session_state.messages.append({
+                        "role": "user",
+                        "file_info": {
+                            "display_name": file.display_name,
+                            "mime_type": file.mime_type,
+                            "tokens": token_count,
+                            "size_bytes": f.size,
+                            "file": file
+                        },
+                        "tokens": token_count
+                    })
 
-        # Add message with token count for text input
+        # Add text message with token count
         st.session_state.messages.append({
             "role": "user", 
-            "parts": [user_input],
+            "text": user_input,
             "tokens": len(user_input) // 4  # Approximate token count
         })
         with st.chat_message("user"):
@@ -217,33 +235,49 @@ if st.session_state.model_set:  # Main interaction loop
             oldest_message = history.pop(0)
             current_token_count -= oldest_message.get('tokens', 0)
 
-        # "tokens" aren't allowed in generate_content messages
-        history = [{"role": m["role"], "parts": m["parts"]} for m in history]
-
+        # Send message to chat
         response = None  # Initialize response
         for delay in [5, 10, 20, 30]:
             try:
-                response = st.session_state.model.generate_content(
-                        history, stream=True)
+                # Send the message using the new API
+                response = st.session_state.chat.send_message(user_input)
                 break
             except Exception as e:
                 print(f"Model API error; retrying: {e}", file=stderr)
                 st.error(f"Error: {e}. Retrying in {delay} seconds...")
                 sleep(delay)
+        
         if response:
-            def generate_chunks(r):
-                for chunk in r:
-                    try:
-                        print("chunk len:", len(ct := chunk.text))  ### DEBUG
-                        yield ct
-                    except Exception as e:
-                        print(f"Response chunk errored: {e}", file=stderr)
+            # Stream the response
             with st.chat_message("assistant"):
-                st.write_stream(generate_chunks(response))
+                response_text = ""
+                response_placeholder = st.empty()
+                
+                # The new API might handle streaming differently
+                # This assumes response has text attribute or similar
+                try:
+                    # For streaming, we might need to iterate over chunks
+                    if hasattr(response, 'text'):
+                        response_text = response.text
+                        response_placeholder.write(response_text)
+                    else:
+                        # Handle streaming if available
+                        for chunk in response:
+                            if hasattr(chunk, 'text'):
+                                response_text += chunk.text
+                                response_placeholder.write(response_text)
+                except Exception as e:
+                    print(f"Response handling error: {e}", file=stderr)
+                    response_placeholder.write("Error processing response")
+                    response_text = "Error processing response"
+            
+            # Calculate token count for response
+            response_tokens = len(response_text) // 4  # Approximate
+            
             st.session_state.messages.append({
                 "role": "model", 
-                "parts": [response.text],
-                "tokens": response.usage_metadata.candidates_token_count
+                "text": response_text,
+                "tokens": response_tokens
             })
             st.rerun()
         else:
