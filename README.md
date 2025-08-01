@@ -8,7 +8,7 @@
 [![MIT License](https://img.shields.io/badge/License-MIT-green)](https://opensource.org/licenses/MIT)
 [![Donate](https://img.shields.io/badge/Donate-gold?logo=paypal)](https://paypal.me/jsalsman)
 
-EduChat is a Streamlit-based educational chatbot that leverages Google's LearnLM 1.5 Pro Experimental large language model for interactive tutoring. The chatbot is designed to provide guided learning experiences while avoiding direct answers to homework questions.
+EduChat is a Streamlit-based educational chatbot that leverages Google's LearnLM large language model for interactive tutoring. The chatbot is designed to provide guided learning experiences while avoiding direct answers to homework questions.
 
 ## Usage
 
@@ -28,9 +28,9 @@ EduChat is a Streamlit-based educational chatbot that leverages Google's LearnLM
 - File upload functionality
 - Instructional hints instead of direct answers
 - Multiple model options:
-  - LearnLM 1.5 Pro Experimental
-  - Gemini 2.0 Flash
-  - Gemini 2.0 Pro Experimental 02-05
+  - LearnLM 2.0 Flash
+  - Gemini 2.5 Flash
+  - Gemini 2.5 Flash Lite
 
 ## Privacy
 
@@ -51,12 +51,12 @@ The Streamlit/Python source code is entirely in the [educhat.py](educhat.py) fil
 
 The project uses Poetry for dependency management internally, but includes a `requirements.txt` file for deployment. Key dependencies include:
 - Python 3.12
-- Streamlit 1.43.2
-- Google GenerativeAI 0.8.4
+- Streamlit 1.47
+- Google genai 1.28
 
 ## Credits
 
-- Implementation by Jim Salsman, March 2025
+- Implementation by Jim Salsman, March-July 2025
 - Inspired by [Tonga et al. (2024)](https://arxiv.org/abs/2411.03495)
 
 ## License
@@ -68,6 +68,9 @@ MIT License - See the [LICENSE](LICENSE) file for details.
 Feel free to fork this repo and customize it, and deploy entirely for free on the [Streamlit Community Cloud](https://share.streamlit.io/).
 
 ## Program Logic
+
+**NOTE:** this is out of date so the line numbers and details may be wrong, but it is generally representative of the code sequence.
+
 1. **Initial Setup** (Lines 1-56):
    - Defines the system instructions for the tutor (Lines 7-23)
    - Imports required libraries (Lines 25-30)
