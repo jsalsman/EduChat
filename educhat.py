@@ -1,6 +1,6 @@
 # Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March-July 2025
 # MIT License -- see the LICENSE file
-VERSION="2.0.0"  # upgraded to the new genai API
+VERSION="2.0.1"  # upgraded to the new genai API
 # For stable releases see: https://github.com/jsalsman/EduChat
 
 # System prompt suffix:
@@ -108,8 +108,11 @@ if 'key_set' not in st.session_state:
         if api_key_input:
             try:
                 client = genai.Client(api_key=api_key_input)
-                models = list(client.models.list())
-                print("models:", len(models), file=stderr)
+                test_response = client.models.generate_content(
+                    model='gemini-2.0-flash',
+                    contents='Hello, world!'
+                )
+                print("API test successful", file=stderr)
                 st.session_state.client = client
                 st.session_state.key_set = True
             except Exception as e:
@@ -154,14 +157,17 @@ if st.session_state.subject_set and not st.session_state.model_set:
     system_prompt = "Tutor the user about " \
         f"{st.session_state.subject}.\n{INSTRUCTIONS}\n"  # append suffix above
 
+    # Create config for the chat
+    config = types.GenerateContentConfig(
+        system_instruction=system_prompt,
+        temperature=0,  # for reproducibility
+        tools=[{"code_execution": {}}]  # Enable code execution
+    )
+    
     # Create a new chat session with the client
     chat = st.session_state.client.chats.create(
         model=st.session_state.model_name,
-        config={
-            "system_instruction": system_prompt,
-            "temperature": 0,  # for reproducibility
-            "tools": [{"code_execution": {}}]  # Enable code execution
-        }
+        config=config
     )
     st.session_state.chat = chat
     st.session_state.model_set = True
@@ -191,27 +197,28 @@ if st.session_state.model_set:  # Main interaction loop
             files_input = json_input.files
             if files_input:  # upload files and add them to the messages
                 for f in files_input:
-                    # Upload file to the client
+                    # Upload file to the client (using bytes instead of path)
+                    file_bytes = f.read()
                     file = st.session_state.client.files.upload(
-                        path=f, 
+                        file=file_bytes, 
                         display_name=f.name,
                         mime_type=f.type
                     )
                     # Get token count (this might need adjustment based on new API)
                     # For now, we'll estimate based on file size
-                    token_count = f.size // 4  # Rough estimate
+                    token_count = len(file_bytes) // 4  # Rough estimate
                     
                     with st.chat_message("user"):
                         st.write(f"Uploaded file '{file.display_name}' "
                                  f"type {file.mime_type} with ~{token_count}"
-                                 f" tokens ({f.size} bytes)")
+                                 f" tokens ({len(file_bytes)} bytes)")
                     st.session_state.messages.append({
                         "role": "user",
                         "file_info": {
                             "display_name": file.display_name,
                             "mime_type": file.mime_type,
                             "tokens": token_count,
-                            "size_bytes": f.size,
+                            "size_bytes": len(file_bytes),
                             "file": file
                         },
                         "tokens": token_count
@@ -248,28 +255,25 @@ if st.session_state.model_set:  # Main interaction loop
                 sleep(delay)
         
         if response:
-            # Stream the response
+            # Display the response (handle both streaming and non-streaming)
             with st.chat_message("assistant"):
                 response_text = ""
-                response_placeholder = st.empty()
                 
-                # The new API might handle streaming differently
-                # This assumes response has text attribute or similar
-                try:
-                    # For streaming, we might need to iterate over chunks
-                    if hasattr(response, 'text'):
-                        response_text = response.text
-                        response_placeholder.write(response_text)
-                    else:
-                        # Handle streaming if available
-                        for chunk in response:
-                            if hasattr(chunk, 'text'):
-                                response_text += chunk.text
-                                response_placeholder.write(response_text)
-                except Exception as e:
-                    print(f"Response handling error: {e}", file=stderr)
-                    response_placeholder.write("Error processing response")
-                    response_text = "Error processing response"
+                # Check if response has text attribute directly
+                if hasattr(response, 'text'):
+                    response_text = response.text
+                    st.write(response_text)
+                else:
+                    # Handle other response formats
+                    try:
+                        # Try to get text from candidates
+                        if hasattr(response, 'candidates') and response.candidates:
+                            response_text = response.candidates[0].content.parts[0].text
+                            st.write(response_text)
+                    except Exception as e:
+                        print(f"Response handling error: {e}", file=stderr)
+                        response_text = "Error processing response"
+                        st.write(response_text)
             
             # Calculate token count for response
             response_tokens = len(response_text) // 4  # Approximate
