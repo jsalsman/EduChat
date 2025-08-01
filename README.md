@@ -2,8 +2,8 @@
 # EduChat: A Constrained LearnLM Tutor
 
 [![Run on Streamlit Community Cloud](https://img.shields.io/badge/Run_on_Streamlit_Community_Cloud-green)](https://edu-chat.streamlit.app)
-[![Google GenerativeAI](https://img.shields.io/badge/google--generativeai-0.8.4-blue?logo=google)](https://github.com/google-gemini/generative-ai-python)
-[![Streamlit Version](https://img.shields.io/badge/sreamlit-1.43.2-blue?logo=streamlit)](https://streamlit.io/)
+[![Google GenerativeAI](https://img.shields.io/badge/google--generativeai-1.28.0-blue?logo=google)](https://github.com/googleapis/python-genai)
+[![Streamlit Version](https://img.shields.io/badge/sreamlit-1.47.0-blue?logo=streamlit)](https://streamlit.io/)
 [![Python Version](https://img.shields.io/badge/python-3.12-blue?logo=python)](https://www.python.org/downloads/)
 [![MIT License](https://img.shields.io/badge/License-MIT-green)](https://opensource.org/licenses/MIT)
 [![Donate](https://img.shields.io/badge/Donate-gold?logo=paypal)](https://paypal.me/jsalsman)
