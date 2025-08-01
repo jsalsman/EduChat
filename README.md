@@ -1,7 +1,7 @@
 
 # EduChat: A Constrained LearnLM Tutor
 
-[![Run on Streamlit Community Cloud](https://img.shields.io/badge/Run_on_Streamlit_Community_Cloud-green)](https://edu-chat.streamlit.app)
+[![Run on Streamlit Community Cloud](https://img.shields.io/badge/Run_on_Streamlit_Community_Cloud-darkgreen)](https://edu-chat.streamlit.app)
 [![Google GenerativeAI](https://img.shields.io/badge/google--genai-1.28.0-blue?logo=google)](https://github.com/googleapis/python-genai)
 [![Streamlit Version](https://img.shields.io/badge/sreamlit-1.47.0-blue?logo=streamlit)](https://streamlit.io/)
 [![Python Version](https://img.shields.io/badge/python-3.12-blue?logo=python)](https://www.python.org/downloads/)
