@@ -1,4 +1,4 @@
-# Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March 2025
+# Constrained LearnLM Tutor, Streamlit app by Jim Salsman, March-July 2025
 # MIT License -- see the LICENSE file
 VERSION="1.5.0"  ### attempted bug fix only partially helps; see "DEBUG" below
 # For stable releases see: https://github.com/jsalsman/EduChat
@@ -127,7 +127,7 @@ if not st.session_state.model_set:  # Select model
         default="learnlm-2.0-flash-experimental", format_func=lambda model:
             ("LearnLM 2.0 Flash Experimental" 
                              if model == "learnlm-2.0-flash-experimental" else
-            "Gemini 2.5 Flash" if model == "gemini-2.5-flash-lite" else
+            "Gemini 2.5 Flash" if model == "gemini-2.5-flash" else
             "Gemini 2.5 Flash Lite"))
 else:
     st.markdown(f"Using model: ```{st.session_state.model_name}```")
